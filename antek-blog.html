@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antek Blog - Droga Developera</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #050505;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass {
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .accent-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-16">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter text-gradient mb-4">Blog Antka</h1>
+            <p class="text-gray-400 text-lg">Moje przemyślenia, nauka i dokumentacja drogi w świecie kodu.</p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- New Post -->
+            <article class="glass p-8 rounded-3xl border border-white/5 hover:border-blue-500/30 transition-all">
+                <div class="flex items-center gap-3 mb-6 text-xs font-bold text-blue-500 uppercase tracking-widest">
+                    <span>Nauka</span>
+                    <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+                    <span class="text-gray-500">4 Stycznia 2026</span>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-6 leading-tight">Jak zagraniczne tutoriale zmieniły moje podejście do kodu</h2>
+                <div class="space-y-4 text-gray-400 leading-relaxed">
+                    <p>
+                        Moja przygoda z programowaniem zaczęła się od jednego prostego tutoriala, ale szybko poczułem niedosyt. Polska scena edukacyjna jest świetna, ale to właśnie **zagraniczne poradniki** otworzyły mi oczy na prawdziwą głębię web developmentu.
+                    </p>
+                    <p>
+                        Zaczynałem od podstaw, ale od razu chciałem wiedzieć więcej. Zamiast budować tylko proste przyciski, zanurkowałem w anglojęzyczne serie o architekturze CSS, zaawansowanym JavaScriptcie i najnowszych trendach UI/UX. Przejście na materiały w języku angielskim pozwoliło mi poznać techniki, które są standardem w największych software house'ach na świecie.
+                    </p>
+                    <p>
+                        Dziś, mając 14 lat, nie boję się czytać dokumentacji w oryginale czy śledzić nowinek od twórców bibliotek. To "rzucenie się na głęboką wodę" sprawiło, że mój rozwój przyspieszył dziesięciokrotnie. Programowanie to język globalny, a nauka z zagranicznych źródeł to najlepsza droga, by stać się częścią tej społeczności.
+                    </p>
+                </div>
+            </article>
+
+            <article class="glass p-8 rounded-3xl border border-white/5 opacity-80">
+                <div class="flex items-center gap-3 mb-4 text-xs font-bold text-purple-500 uppercase tracking-widest">
+                    <span>Narzędzia</span>
+                    <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+                    <span class="text-gray-500">Grudzień 2025</span>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-4">Dlaczego VS Code to mój jedyny wybór?</h2>
+                <p class="text-gray-400 leading-relaxed">
+                    Używam VS Code do wszystkich swoich projektów. To nie tylko edytor, to całe centrum dowodzenia. Dzięki rozszerzeniom i personalizacji, moje workflow jest niezwykle szybkie i przyjemne.
+                </p>
+            </article>
+        </main>
+
+        <footer class="mt-20 pt-8 border-t border-white/5 text-gray-500 text-sm flex justify-between items-center">
+            <p>&copy; 2026 Antek Blog</p>
+            <a href="index.html" class="hover:text-white transition-colors">Powrót do portfolio</a>
+        </footer>
+    </div>
+</body>
+</html>

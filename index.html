@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antek - Fullstack Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            900: '#050505',
+                            800: '#0a0a0a',
+                            700: '#111111',
+                            600: '#1a1a1a',
+                        },
+                        accent: {
+                            blue: '#3b82f6',
+                            purple: '#8b5cf6',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'slide-up': 'slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 3s ease-in-out infinite',
+                        'blur-in': 'blurIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'magnetic': 'magnetic 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        glow: {
+                            '0%, 100%': { opacity: '0.5', filter: 'brightness(1)' },
+                            '50%': { opacity: '1', filter: 'brightness(1.5) blur(2px)' },
+                        },
+                        blurIn: {
+                            '0%': { opacity: '0', filter: 'blur(20px)', transform: 'scale(0.9)' },
+                            '100%': { opacity: '1', filter: 'blur(0)', transform: 'scale(1)' },
+                        }
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Optimization & Animations */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        section {
+            content-visibility: auto;
+            contain-intrinsic-size: 1000px;
+        }
+        
+        /* Continuous Wheel Rotation */
+        @keyframes wheel-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pod-counter-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+        
+        .wheel-animate {
+            animation: wheel-rotate 40s linear infinite;
+            will-change: transform;
+        }
+        
+        .pod-animate {
+            animation: pod-counter-rotate 40s linear infinite;
+            will-change: transform;
+        }
+        
+        .wheel-paused, .wheel-paused .pod-animate {
+            animation-play-state: paused;
+        }
+
+        body {
+            background-color: #050505;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        /* Animated Background */
+        .bg-animate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a0a0a 0%, #050505 100%);
+        }
+        .bg-dots {
+            background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 30px 30px;
+            width: calc(100% + 60px);
+            height: calc(100% + 60px);
+            opacity: 0.3;
+            animation: move-dots 20s linear infinite;
+            position: absolute;
+            top: -30px;
+            left: -30px;
+            will-change: transform;
+        }
+        @keyframes move-dots {
+            from { transform: translate(0, 0); }
+            to { transform: translate(30px, 30px); }
+        }
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            filter: blur(80px);
+            border-radius: 50%;
+            animation: blob-float 10s infinite alternate;
+        }
+        @keyframes blob-float {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(50px, 100px, 0) scale(1.1); }
+        }
+        
+        /* Laptop Style */
+        .laptop-container {
+            perspective: 1000px;
+        }
+        .laptop-screen {
+            background: #111;
+            border: 12px solid #222;
+            border-radius: 20px 20px 0 0;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .laptop-bottom {
+            height: 10px;
+            background: #333;
+            border-radius: 0 0 20px 20px;
+            position: relative;
+            transform-origin: top;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .laptop-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 15px;
+            background: #222;
+            border-radius: 0 0 10px 10px;
+            z-index: 10;
+        }
+        
+        .glass {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        border-color 0.4s ease,
+                        background 0.4s ease,
+                        box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+        .glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.05),
+                transparent
+            );
+            transition: 0.5s;
+            pointer-events: none;
+        }
+        .glass:hover::before {
+            left: 100%;
+        }
+        .glass:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(15, 15, 15, 0.8);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        .text-reveal {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: bottom;
+        }
+        .text-reveal::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #3b82f6;
+            transform: translateX(-101%);
+            animation: reveal-box 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+        .text-reveal-content {
+            display: inline-block;
+            opacity: 0;
+            animation: text-appear 0.01s forwards;
+            animation-delay: 0.6s;
+        }
+        .text-reveal[style*="delay: 0.2s"] .text-reveal-content {
+            animation-delay: 0.8s;
+        }
+        .text-reveal[style*="delay: 0.2s"]::after {
+            animation-delay: 0.2s;
+        }
+        @keyframes text-appear {
+            to { opacity: 1; }
+        }
+        @keyframes reveal-box {
+            0% { transform: translateX(-101%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(101%); }
+        }
+        .text-gradient-alt {
+            background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hover-glow {
+            position: relative;
+        }
+        .hover-glow::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .hover-glow:hover::before {
+            opacity: 1;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .accent-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+        .project-image {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Modal scrollbar */
+        .preview-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .preview-content::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        .preview-content::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .cursor-outline {
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cursor-outline::after {
+            content: '';
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            filter: blur(10px);
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .cursor-active .cursor-outline {
+            width: 60px;
+            height: 60px;
+            border-color: rgba(59, 130, 246, 0.8);
+            border-width: 1px;
+        }
+        .cursor-active .cursor-outline::after {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none; }
+            * { cursor: auto !important; }
+        }
+        @media (min-width: 769px) {
+            * { cursor: none !important; }
+            a, button, [onclick], .group { cursor: none !important; }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Expandable Card Animation */
+        .full-content {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .card-expanded .full-content {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+        .card-expanded .line-clamp-3 {
+            -webkit-line-clamp: unset;
+        }
+        /* Path Dial Styles */
+        .active-stage {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+            scale: 1.1;
+        }
+        .active-stage span {
+            color: #3b82f6 !important;
+        }
+    </style>
+</head>
+<body class="selection:bg-blue-500/30">
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <!-- Background Elements -->
+    <div class="bg-animate">
+        <div class="bg-dots"></div>
+        <div class="blob top-[-10%] left-[-10%]"></div>
+        <div class="blob bottom-[-10%] right-[-10%]" style="animation-delay: -5s; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 glass">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="#home" class="text-xl font-bold tracking-tighter">
+                AN<span class="text-blue-500">TEK</span>
+            </a>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+                <a href="#about" class="hover:text-white transition-colors">O mnie</a>
+                <a href="#projects" class="hover:text-white transition-colors">Projekty</a>
+                <a href="#contact" class="hover:text-white transition-colors">Kontakt</a>
+            </div>
+            <button class="md:hidden p-2" id="menu-btn">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass border-b border-white/5 py-6 px-6 space-y-4">
+            <a href="#about" class="block text-lg font-medium" onclick="toggleMenu()">O mnie</a>
+            <a href="#projects" class="block text-lg font-medium" onclick="toggleMenu()">Projekty</a>
+            <a href="#contact" class="block text-lg font-medium" onclick="toggleMenu()">Kontakt</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center pt-20 px-6">
+        <div class="max-w-6xl mx-auto w-full grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center">
+            <div class="animate-fade-in">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400 mb-6 uppercase tracking-wider">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    Przyjmuję zlecenia ZA DARMO (Buduję bazę klientów)
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.1] mb-6">
+                    <span class="text-reveal">
+                        <span class="text-reveal-content text-gradient-alt">Hej, jestem Antek,</span>
+                    </span> <br/> 
+                    <span class="text-reveal" style="animation-delay: 0.2s">
+                        <span class="text-reveal-content text-gradient-alt">i jestem młodym webdeveloperem.</span>
+                    </span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-400 max-w-xl mb-10 leading-relaxed">
+                    Mam 14 lat i specjalizuję się w tworzeniu czystego kodu <b>HTML</b> oraz nowoczesnego stylowania <b>Tailwind CSS</b>. Kod piszę wyłącznie w <b>Cursorze</b> i <b>VS Code</b>. Obecnie oferuję swoje usługi bezpłatnie, aby zbudować portfolio.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#projects" class="px-8 py-3.5 rounded-full bg-white text-black font-semibold hover:bg-gray-200 transition-all flex items-center gap-2 group">
+                        Zobacz projekty
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <a href="#contact" class="px-8 py-3.5 rounded-full glass font-semibold hover:bg-white/10 transition-all border border-white/10">
+                        Zleć mi projekt
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hidden md:block animate-fade-in delay-200">
+                <div class="laptop-container group scale-75 lg:scale-100 transition-transform">
+                    <div class="laptop-screen aspect-[16/10] flex flex-col">
+                        <div class="laptop-notch"></div>
+                        <div class="flex-grow p-4 bg-[#0a0a0a] flex flex-col gap-3 font-mono text-[10px]">
+                            <div class="flex gap-2">
+                                <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                                <div class="w-2 h-2 rounded-full bg-yellow-500/50"></div>
+                                <div class="w-2 h-2 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <div class="text-blue-400">const developer = {</div>
+                            <div class="pl-4 text-gray-400">name: <span class="text-green-400">'Antek'</span>,</div>
+                            <div class="pl-4 text-gray-400">tools: [<span class="text-green-400">'Cursor'</span>, <span class="text-green-400">'VS Code'</span>],</div>
+                            <div class="pl-4 text-gray-400">mastery: [<span class="text-green-400">'HTML'</span>, <span class="text-green-400">'Tailwind CSS'</span>],</div>
+                            <div class="pl-4 text-gray-400">learning: [<span class="text-green-400">'React'</span>],</div>
+                            <div class="text-blue-400">};</div>
+                            <div class="mt-auto animate-pulse text-gray-600">_</div>
+                        </div>
+                    </div>
+                    <div class="laptop-bottom"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-32 px-6" style="content-visibility: auto;">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-20">
+                <div class="space-y-8 animate-slide-up">
+                    <h2 class="text-3xl font-bold tracking-tight">O mnie</h2>
+                    <div class="space-y-4 text-gray-400 leading-relaxed">
+                        <p>
+                            Moja przygoda z kodowaniem zaczęła się, gdy miałem zaledwie 11 lat. To wtedy postawiłem swoją pierwszą stronę i poczułem, że tworzenie czegoś z niczego to moja pasja. Dziś, mając 14 lat, wiem, że w tej branży wiek to tylko liczba, a liczą się realne umiejętności i dostarczona wartość.
+                        </p>
+                        <p>
+                            Kluczowym momentem było przejście na zagraniczne tutoriale i dokumentację. To one nauczyły mnie, jak pisać skalowalny kod i rozwiązywać problemy, na które nie ma gotowych odpowiedzi. GitHub stał się moim codziennym narzędziem do nauki i analizy architektury najlepszych projektów open-source.
+                        </p>
+                        <p>
+                            Wiele osób myśli, że do tworzenia pięknych stron potrzebny jest najdroższy sprzęt. Prawda jest inna – wystarczy zwykły, przeciętny laptop i ogromna dawka dyscypliny. To nie procesor buduje doświadczenia użytkownika, ale Twoja kreatywność i konsekwencja w pisaniu czystego kodu.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                        <p class="text-sm text-blue-400 flex items-start gap-3">
+                            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                            Ważne: Ze względu na szkołę, czas realizacji projektów może być nieco dłuższy. Dziękuję za wyrozumiałość!
+                        </p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 animate-slide-up">
+                    <div class="p-6 glass rounded-2xl border-white/5 hover:border-blue-500/30 transition-all group">
+                        <h3 class="font-bold mb-4 text-white group-hover:text-blue-400 transition-colors">Główny Stack</h3>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li>HTML5 (100%)</li>
+                            <li>Tailwind CSS</li>
+                            <li>CSS3 / Flexbox / Grid</li>
+                            <li>Responsive Design</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 glass rounded-2xl border-white/5 hover:border-purple-500/30 transition-all group">
+                        <h3 class="font-bold mb-4 text-white group-hover:text-purple-400 transition-colors">W nauce</h3>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li>React.js (Podstawy)</li>
+                            <li>JavaScript ES6+</li>
+                            <li>Node.js</li>
+                            <li>UI Design</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-span-2 space-y-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Sprzęt, na którym pracuję</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Main Base: Laptop -->
+                            <div class="glass rounded-2xl border-white/5 overflow-hidden group hover:border-blue-500/30 transition-all flex flex-col">
+                                <div class="aspect-video relative overflow-hidden">
+                                    <img src="acer-laptop-acer-extensa-14-u5-16-512gb-w11p,180723175353_5.webp" alt="Acer Extensa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-dark-900 to-transparent opacity-60"></div>
+                                    <div class="absolute bottom-4 left-4">
+                                        <span class="px-2 py-1 rounded bg-blue-500 text-[10px] font-bold text-white uppercase tracking-wider">Główna Baza Projektowa</span>
+                                    </div>
+                                </div>
+                                <div class="p-6 flex-grow flex flex-col">
+                                    <div class="mb-4">
+                                        <h4 class="text-lg font-bold text-white mb-1">Acer Extensa 14</h4>
+                                        <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Twoje centrum dowodzenia</p>
+                                    </div>
+                                    <ul class="text-sm text-gray-400 space-y-2 mb-6">
+                                        <li class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                                            Ultra 5 125H | Intel® Arc™ Graphics (działający jako Intel® Graphics) | 16GB RAM | 512GB SSD
+                                        </li>
+                                    </ul>
+                                    <button onclick="openLaptopSpecs()" class="mt-auto w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-2 group/btn">
+                                        Pełna specyfikacja
+                                        <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- PC Station -->
+                            <div class="space-y-6">
+                                <div class="p-5 glass rounded-2xl border-white/5 flex gap-4 items-center group hover:border-gray-500/30 transition-all">
+                                    <div class="w-20 h-20 rounded-xl bg-white/5 overflow-hidden flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=400&q=80" alt="PC Station" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Stacja Robocza</p>
+                                        <h4 class="text-sm font-bold text-white">Komputer Stacjonarny</h4>
+                                        <p class="text-[10px] text-gray-500 leading-tight">Używany głównie do formalności i zadań administracyjnych.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Journey Section -->
+    <section class="py-24 md:py-32 px-6 relative overflow-hidden bg-dark-900/50" style="content-visibility: auto;">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-blue-500/5 blur-[150px] rounded-full pointer-events-none"></div>
+        
+        <div class="max-w-6xl mx-auto relative">
+            <div class="text-center mb-16 space-y-4">
+                <div class="inline-flex px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest">
+                    Interaktywna Ścieżka
+                </div>
+                <h2 class="text-3xl md:text-5xl font-extrabold tracking-tighter text-white leading-tight">
+                    Zakręć moją <span class="text-blue-500">historią.</span>
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Klikaj w ikony na okręgu, aby zobaczyć szczegóły poszczególnych etapów mojego rozwoju.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-16 min-h-[700px]">
+                <!-- Ferris Wheel (Diabelski Młyn) -->
+                <div class="relative w-[320px] h-[320px] md:w-[500px] md:h-[500px] flex-shrink-0">
+                    <!-- The Wheel Structure -->
+                    <div class="absolute inset-0 border-4 border-white/5 rounded-full shadow-[0_0_100px_rgba(59,130,246,0.05)]"></div>
+                    <div class="absolute inset-8 border border-dashed border-white/5 rounded-full"></div>
+                    
+                    <!-- Spokes (Szprychy) -->
+                    <div class="absolute inset-0 animate-[spin_60s_linear_infinite] opacity-20">
+                        <div class="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                        <div class="absolute top-0 left-1/2 h-full w-px bg-gradient-to-b from-transparent via-white to-transparent"></div>
+                    </div>
+
+                    <!-- Rotating Pods Container -->
+                    <div id="path-dial" class="absolute inset-0 wheel-animate">
+                        <!-- 10 Pods will be generated via JS -->
+                    </div>
+
+                    <!-- Center Display (The Axle) -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-blue-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full glass border border-blue-500/20 flex items-center justify-center relative z-10">
+                                <svg class="w-10 h-10 md:w-12 md:h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Card & Navigation -->
+                <div class="w-full max-w-xl flex flex-col gap-8 relative z-20">
+                    <!-- Step Navigator -->
+                    <div class="flex justify-start gap-2 overflow-x-auto no-scrollbar py-2">
+                        <div id="step-nav" class="flex gap-2">
+                            <!-- Step dots will be generated here -->
+                        </div>
+                    </div>
+
+                    <!-- Info Display Card -->
+                    <div id="stage-card" class="glass p-8 md:p-12 rounded-[40px] border-white/10 min-h-[400px] flex flex-col justify-center animate-blur-in shadow-2xl relative overflow-hidden group">
+                        <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full group-hover:bg-blue-500/10 transition-all duration-700"></div>
+                        <div id="stage-content" class="relative z-10">
+                            <!-- Content will be injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deep Dive Philosophy Section -->
+    <section class="py-32 px-6 bg-dark-900/30">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-3 gap-12">
+                <div class="space-y-6 animate-slide-up">
+                    <div class="text-blue-500 font-mono text-sm tracking-widest uppercase">01 // Workflow</div>
+                    <h3 class="text-2xl font-bold text-white">AI-First Development</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">
+                        Nie boję się nowoczesności. Wykorzystuję potencjał **Cursora** i **VS Code** w połączeniu z AI, aby dostarczać kod szybciej i bezbłędnie. Dla mnie AI to nie droga na skróty, ale turbodoładowanie dla kreatywności i jakości, które pozwala mi skupić się na architekturze interfejsu zamiast na powtarzalnych zadaniach.
+                    </p>
+                </div>
+                <div class="space-y-6 animate-slide-up" style="animation-delay: 0.2s">
+                    <div class="text-purple-500 font-mono text-sm tracking-widest uppercase">02 // Code Quality</div>
+                    <h3 class="text-2xl font-bold text-white">Obsesja na punkcie lekkości</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">
+                        Strony, które buduję, muszą "latać". Moje podejście opiera się na **Utility-First CSS (Tailwind)** i semantycznym HTML-u. Każdy div ma swoje miejsce, a każda klasa jest przemyślana. Dzięki temu moje projekty osiągają najwyższe wyniki w testach wydajnościowych, co przekłada się na lepsze SEO i zadowolenie użytkowników.
+                    </p>
+                </div>
+                <div class="space-y-6 animate-slide-up" style="animation-delay: 0.4s">
+                    <div class="text-emerald-500 font-mono text-sm tracking-widest uppercase">03 // Growth</div>
+                    <h3 class="text-2xl font-bold text-white">Nieustanny rozwój</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">
+                        Moja nauka nigdy się nie kończy. Po opanowaniu HTML-a i Tailwinda do perfekcji, obecnie intensywnie wgłębiam się w ekosystem **React.js** i nowoczesny JavaScript. Analizuję repozytoria na GitHubie, aby zrozumieć jak najwięksi gracze na rynku budują skalowalne aplikacje webowe.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Big Quote / Manifesto -->
+            <div class="mt-32 p-12 glass rounded-[40px] border-white/5 relative overflow-hidden group">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 blur-[80px] rounded-full group-hover:bg-blue-500/20 transition-all duration-700"></div>
+                <div class="relative z-10">
+                    <svg class="w-12 h-12 text-blue-500/20 mb-8" fill="currentColor" viewBox="0 0 32 32"><path d="M10 8v8H6v-8h4m10 0v8h-4v-8h4m-10-4H4v12h8V4h-2m10 0h-8v12h8V4h-2z"/></svg>
+                    <blockquote class="text-2xl md:text-4xl font-medium text-white leading-tight tracking-tight mb-8">
+                        "Wierzę, że wiek 14 lat to nie przeszkoda, ale przewaga. Mam świeże spojrzenie, nieskończone pokłady energii i dyscyplinę, której nauczyłem się, budując projekty na starym laptopie. Dla mnie programowanie to nie tylko praca, to język, w którym tworzę przyszłość."
+                    </blockquote>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-1px bg-blue-500"></div>
+                        <div class="text-sm font-bold uppercase tracking-widest text-blue-500">Manifest Developera</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OS Selection Section -->
+    <section class="py-24 px-6 relative overflow-hidden bg-emerald-500/[0.02]" style="content-visibility: auto;">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-[1fr_1.5fr] gap-12 items-center">
+                <div class="space-y-6 animate-slide-up">
+                    <div class="inline-flex px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-widest">
+                        Mój System: Ubuntu Desktop
+                    </div>
+                    <h2 class="text-3xl md:text-5xl font-extrabold tracking-tighter text-white leading-tight">
+                        Dlaczego do programowania <span class="text-emerald-500">tylko Linux?</span>
+                    </h2>
+                    <p class="text-gray-400 leading-relaxed italic">
+                        "Pracuję na **Ubuntu**, bo to stabilność połączona z ogromnym wsparciem społeczności. To Linux pokazał mi, co to znaczy prawdziwa kontrola nad systemem. Moim zdaniem, jeśli chcesz być profesjonalnym programistą, terminal musi być Twoim domem."
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-[1.5fr_2fr] gap-12 mt-12">
+                    <!-- Left: Points List -->
+                    <div id="linux-points-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-4 no-scrollbar">
+                        <!-- Generated via JS -->
+                    </div>
+
+                    <!-- Right: Detail Card -->
+                    <div id="linux-detail-card" class="glass p-8 md:p-12 rounded-[40px] border-emerald-500/10 min-h-[500px] flex flex-col justify-center relative overflow-hidden group">
+                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full group-hover:bg-emerald-500/10 transition-all duration-700"></div>
+                        <div id="linux-detail-content" class="relative z-10">
+                            <!-- Content will be injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-32 px-6 bg-dark-800/50" style="content-visibility: auto;">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+                <div class="space-y-4">
+                    <h2 class="text-4xl font-bold tracking-tight">Wybrane projekty</h2>
+                    <p class="text-gray-400">Eksploruj moje ostatnie realizacje bezpośrednio na stronie.</p>
+                </div>
+                <div class="text-sm text-gray-500 font-medium uppercase tracking-widest">
+                    Portfolio v2.0
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1: Stellar Studio -->
+                <div class="group relative glass rounded-3xl overflow-hidden border-white/5 hover:border-white/10 transition-all flex flex-col h-full">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80" alt="Stellar Studio" class="w-full h-full object-cover project-image">
+                    </div>
+                    <div class="p-8 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 block">Creative Agency</span>
+                                <h3 class="text-2xl font-bold text-white">Stellar Studio</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Premium portfolio dla firm branżowych. Łączy czysty minimalizm z nowoczesnymi technologiami takimi jak React.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">React</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">Tailwind</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">Modern UI</span>
+                        </div>
+                        <div class="mt-auto flex gap-4">
+                            <button onclick="openPreview('portfolio-firmy.html')" class="flex-1 py-3 rounded-xl bg-white text-black text-sm font-bold hover:bg-gray-200 transition-colors text-center">
+                                Otwórz Demo
+                            </button>
+                            <a href="#" class="w-12 h-12 rounded-xl glass border border-white/10 flex items-center justify-center hover:bg-white/5 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Sklep z butami -->
+                <div class="group relative glass rounded-3xl overflow-hidden border-white/5 hover:border-white/10 transition-all flex flex-col h-full">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Shoe Store" class="w-full h-full object-cover project-image">
+                    </div>
+                    <div class="p-8 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-purple-500 uppercase tracking-widest mb-2 block">E-commerce</span>
+                                <h3 class="text-2xl font-bold text-white uppercase">Velocity - Sklep z butami</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Demo sklepu internetowego z pełną funkcjonalnością koszyka, zaawansowanymi animacjami i responsywnym designem.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">JavaScript</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">Tailwind</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">Animation</span>
+                        </div>
+                        <div class="mt-auto flex gap-4">
+                            <button onclick="openPreview('sklep-buty.html')" class="flex-1 py-3 rounded-xl bg-white text-black text-sm font-bold hover:bg-gray-200 transition-colors text-center">
+                                Otwórz Demo
+                            </button>
+                            <a href="https://megawrzuta.pl/bkrhlcxi" target="_blank" class="w-12 h-12 rounded-xl glass border border-white/10 flex items-center justify-center hover:bg-white/5 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Antek Blog -->
+                <div class="group relative glass rounded-3xl overflow-hidden border-white/5 hover:border-white/10 transition-all flex flex-col h-full">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80" alt="Blog Project" class="w-full h-full object-cover project-image">
+                    </div>
+                    <div class="p-8 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-green-500 uppercase tracking-widest mb-2 block">Personal Blog</span>
+                                <h3 class="text-2xl font-bold text-white">Antek Blog</h3>
+                            </div>
+                        </div>
+        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+            Zacząłem w wieku 11 lat, ucząc się z najlepszych zagranicznych tutoriali. Dziś dzielę się wiedzą o tym, jak GitHub uczy rozwiązywania realnych problemów i dlaczego dyscyplina na przeciętnym laptopie znaczy więcej niż najdroższy sprzęt.
+        </p>
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">HTML</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">CSS</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-gray-300 border border-white/5 uppercase">Design</span>
+                        </div>
+                        <div class="mt-auto flex gap-4">
+                            <button onclick="openPreview('antek-blog.html')" class="flex-1 py-3 rounded-xl bg-white text-black text-sm font-bold hover:bg-gray-200 transition-colors text-center">
+                                Otwórz Demo
+                            </button>
+                            <a href="#" class="w-12 h-12 rounded-xl glass border border-white/10 flex items-center justify-center hover:bg-white/5 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-32 px-6">
+        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="space-y-2">
+                <div class="text-4xl font-extrabold text-white tracking-tighter">30+</div>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Zbudowanych stron</div>
+            </div>
+            <div class="space-y-2">
+                <div class="text-4xl font-extrabold text-white tracking-tighter">20+</div>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Zadowolonych klientów</div>
+            </div>
+            <div class="space-y-2">
+                <div class="text-4xl font-extrabold text-white tracking-tighter">∞</div>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Chęci do rozwoju</div>
+            </div>
+            <div class="space-y-2">
+                <div class="text-4xl font-extrabold text-white tracking-tighter">14</div>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Lat na karku</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 px-6 bg-dark-800/50">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-8 text-gradient">Porozmawiajmy o Twoim <br/> następnym projekcie.</h2>
+            <p class="text-gray-400 text-lg mb-12">Chcesz stworzyć coś wyjątkowego? Napisz do mnie, a wspólnie wymyślimy najlepsze rozwiązanie.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <button onclick="showEmailToast()" class="px-10 py-4 rounded-full accent-gradient text-white font-bold hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all">
+                    Napisz maila
+                </button>
+                <a href="https://www.tiktok.com/@antek.dev" target="_blank" onclick="showTikTokToast(event)" class="px-10 py-4 rounded-full bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-3 group">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/></svg>
+                    TikTok
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 px-6 border-t border-white/5">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-lg font-bold tracking-tighter uppercase">Antek<span class="text-blue-500">.dev</span></div>
+            <p class="text-gray-500 text-sm">&copy; 2026 Antek. Wszystkie prawa zastrzeżone.</p>
+            <div class="flex gap-6">
+                <a href="https://www.tiktok.com/@antek.dev" target="_blank" class="text-gray-500 hover:text-white transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/></svg>
+                    TikTok
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Live Preview Modal -->
+    <div id="preview-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 md:p-8">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="closePreview()"></div>
+        <div class="relative w-full h-full glass rounded-3xl overflow-hidden flex flex-col shadow-2xl animate-fade-in">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-dark-900/50">
+                <div class="flex items-center gap-4">
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
+                    </div>
+                    <span id="preview-title" class="text-xs font-mono text-gray-500 ml-4 truncate max-w-[200px]">preview.html</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a id="preview-external" href="#" target="_blank" class="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/5" title="Otwórz w nowej karcie">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                    <button onclick="closePreview()" class="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/5">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Modal Body -->
+            <div class="flex-grow bg-white">
+                <iframe id="preview-iframe" class="w-full h-full border-none" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="email-toast" class="fixed bottom-[-100px] left-1/2 -translate-x-1/2 z-[300] transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) pointer-events-none">
+        <div class="glass px-8 py-4 rounded-full border border-blue-500/30 text-white font-medium shadow-[0_0_40px_rgba(59,130,246,0.2)] flex items-center gap-3 animate-float">
+            <div class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></div>
+            napisz na gmail <span class="text-blue-400 font-bold">antekwebdevelopment@gmail.com</span>
+        </div>
+    </div>
+
+    <div id="tiktok-toast" class="fixed bottom-[-100px] left-1/2 -translate-x-1/2 z-[300] transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) pointer-events-none">
+        <div class="glass px-8 py-4 rounded-full border border-pink-500/30 text-white font-medium shadow-[0_0_40px_rgba(236,72,153,0.2)] flex items-center gap-3 animate-float">
+            <div class="w-2.5 h-2.5 rounded-full bg-pink-500 animate-pulse"></div>
+            wbijaj na tiktoka: <span class="text-pink-400 font-bold">Antek WebDevelopment (@antek.dev)</span>
+        </div>
+    </div>
+
+    <!-- Laptop Specs Modal -->
+    <div id="specs-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 md:p-8">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="closeSpecs()"></div>
+        <div class="absolute w-[500px] h-[500px] bg-blue-500/20 blur-[120px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none animate-pulse"></div>
+        <div class="relative w-full max-w-2xl glass rounded-3xl overflow-hidden flex flex-col shadow-2xl animate-slide-up border border-white/10">
+            <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/5 backdrop-blur-md">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg">Acer Extensa 14</h3>
+                        <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Specyfikacja techniczna</p>
+                    </div>
+                </div>
+                <button onclick="closeSpecs()" class="p-2 text-gray-400 hover:text-white transition-all rounded-xl hover:bg-white/10 hover:rotate-90">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-4 sm:p-8 overflow-y-auto max-h-[80vh] preview-content">
+                <div class="grid md:grid-cols-2 gap-3 sm:gap-4 mb-8">
+                    <div class="space-y-3 sm:space-y-4">
+                        <div class="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all group/item">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover/item:bg-blue-500/20 transition-colors">
+                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                                </div>
+                                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-wider">Procesor</p>
+                            </div>
+                            <p class="text-xs sm:text-sm text-white font-bold">Intel Core Ultra 5 125H</p>
+                            <p class="text-[10px] text-gray-500 mt-1">14 rdzeni | 18 wątków</p>
+                        </div>
+                        <div class="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-all group/item">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover/item:bg-purple-500/20 transition-colors">
+                                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                </div>
+                                <p class="text-[10px] font-bold text-purple-500 uppercase tracking-wider">Pamięć RAM</p>
+                            </div>
+                            <p class="text-xs sm:text-sm text-white font-bold">16 GB LPDDR5X</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div class="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all group/item">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover/item:bg-emerald-500/20 transition-colors">
+                                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                                </div>
+                                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Dysk</p>
+                            </div>
+                            <p class="text-xs sm:text-sm text-white font-bold">512 GB SSD PCIe</p>
+                        </div>
+                        <div class="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-amber-500/30 transition-all group/item">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover/item:bg-amber-500/20 transition-colors">
+                                    <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </div>
+                                <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Ekran</p>
+                            </div>
+                            <p class="text-xs sm:text-sm text-white font-bold">14" WUXGA IPS</p>
+                        </div>
+                        <div class="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-cyan-400/30 transition-all group/item">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-400/10 flex items-center justify-center group-hover/item:bg-cyan-400/20 transition-colors">
+                                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                </div>
+                                <p class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Grafika</p>
+                            </div>
+                            <p class="text-xs sm:text-sm text-white font-bold">Intel® Arc™ Graphics (działający jako Intel® Graphics)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div class="relative">
+                        <div class="absolute -left-4 top-0 w-1 h-full bg-blue-500 rounded-full opacity-50"></div>
+                        <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Historia i pochodzenie
+                        </h4>
+                        <p class="text-sm text-gray-400 leading-relaxed italic">
+                            "Zacząłem w wieku 11 lat. Mój obecny Acer Extensa 14 to wynik mojej ciężkiej pracy, ale również wsparcia moich rodziców, którzy od zawsze we mnie wierzą i zawsze mnie dopingują. Ten sprzęt to dla mnie dowód, że połączenie pasji i wiary najbliższych pozwala dowozić najwyższą jakość."
+                        </p>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -left-4 top-0 w-1 h-full bg-purple-500 rounded-full opacity-50"></div>
+                        <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                            Programowanie i mobilność
+                        </h4>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Procesor Ultra 5 z serii 125H w połączeniu z 16GB szybkiej pamięci RAM sprawia, że kompilacja kodu i praca z wieloma kontenerami to czysta przyjemność. Dzięki wadze zaledwie 1.4 kg, laptop jest idealnym narzędziem dla programisty w ruchu, pozwalając na pracę z dowolnego miejsca bez kompromisów w wydajności.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <div class="px-4 py-2 rounded-xl bg-blue-500/10 text-[10px] font-extrabold text-blue-400 border border-blue-500/20 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                            LEKKOŚĆ: 1.4 KG
+                        </div>
+                        <div class="px-4 py-2 rounded-xl bg-purple-500/10 text-[10px] font-extrabold text-purple-400 border border-purple-500/20 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span>
+                            BATERIA: DO 10H
+                        </div>
+                        <div class="px-4 py-2 rounded-xl bg-emerald-500/10 text-[10px] font-extrabold text-emerald-400 border border-emerald-500/20 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            ZŁĄCZA: THUNDERBOLT 4
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 bg-white/5 border-t border-white/10 flex justify-center">
+                <button onclick="closeSpecs()" class="px-8 py-3 rounded-2xl bg-white text-black font-bold hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                    Zamknij specyfikację
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const specsModal = document.getElementById('specs-modal');
+
+        function openLaptopSpecs() {
+            document.body.style.overflow = 'hidden';
+            specsModal.classList.remove('hidden');
+            specsModal.classList.add('flex');
+        }
+
+        function closeSpecs() {
+            document.body.style.overflow = '';
+            specsModal.classList.add('hidden');
+            specsModal.classList.remove('flex');
+        }
+
+        function showEmailToast() {
+            const toast = document.getElementById('email-toast');
+            toast.style.bottom = '32px';
+            setTimeout(() => {
+                toast.style.bottom = '-100px';
+            }, 5000);
+        }
+
+        function showTikTokToast(event) {
+            const toast = document.getElementById('tiktok-toast');
+            toast.style.bottom = '32px';
+            setTimeout(() => {
+                toast.style.bottom = '-100px';
+            }, 5000);
+        }
+
+        // Navigation toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+
+        // Live Preview Functionality
+        const modal = document.getElementById('preview-modal');
+        const iframe = document.getElementById('preview-iframe');
+        const previewTitle = document.getElementById('preview-title');
+        const previewExternal = document.getElementById('preview-external');
+
+        function openPreview(path) {
+            document.body.style.overflow = 'hidden';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            iframe.src = path;
+            previewTitle.textContent = path.split('/').pop();
+            previewExternal.href = path;
+        }
+
+        function closePreview() {
+            document.body.style.overflow = '';
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            iframe.src = '';
+        }
+
+        // Handle Escape key for modal
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePreview();
+        });
+
+        // Reveal animations on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.filter = 'blur(0)';
+                        entry.target.style.transform = 'translateY(0) scale(1)';
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-slide-up, .glass').forEach(el => {
+            el.style.opacity = '0';
+            el.style.filter = 'blur(10px)';
+            el.style.transform = 'translateY(40px) scale(0.95)';
+            el.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+            observer.observe(el);
+        });
+
+        // Path Dial Logic
+        const stages = [
+            {
+                label: "Start (Laptop)",
+                title: "Mój Laptop",
+                subtitle: "Etap 01 // Fundamenty",
+                description: "Zacząłem w wieku 11 lat. Mój obecny Acer Extensa 14 został w połowie kupiony przez moich rodziców – wierzą w mój sukces i zawsze mnie dopingują, za co jestem im ogromnie wdzięczny.",
+                points: ["Wsparcie rodziców", "Start w wieku 11 lat", "Determinacja"],
+                color: "blue"
+            },
+            {
+                label: "1:1 Tutory",
+                title: "Kopiowanie 1:1",
+                subtitle: "Etap 02 // Nauka",
+                description: "Na początku kopiowałem kod linijka po linijce. To był kluczowy etap oswajania się ze składnią i strukturą nowoczesnych stron. Zrozumiałem, jak divy łączą się w całość.",
+                points: ["Analiza składni", "Struktura DOM", "Pierwsze divy"],
+                color: "purple"
+            },
+            {
+                label: "Debugging",
+                title: "Walka z Bugami",
+                subtitle: "Etap 03 // Logika",
+                description: "Błędy to nie porażka, to informacja zwrotna. Nauczyłem się, że każde 'undefined' to zagadka do rozwiązania, która czyni mnie lepszym programistą i uczy cierpliwości.",
+                points: ["Console log to przyjaciel", "Rozwiązywanie problemów", "Cierpliwość"],
+                color: "red"
+            },
+            {
+                label: "Docs ENG",
+                title: "Dokumentacja ENG",
+                subtitle: "Etap 04 // Bariery",
+                description: "Przejście na angielskojęzyczne źródła otworzyło mi drzwi do światowych standardów. Bariera językowa przestała istnieć, gdy zrozumiałem, że najlepsza wiedza jest globalna.",
+                points: ["Angielski w IT", "MDN & Stack Overflow", "Globalne standardy"],
+                color: "emerald"
+            },
+            {
+                label: "Tailwind",
+                title: "Magia Tailwinda",
+                subtitle: "Etap 05 // Stylowanie",
+                description: "Utility-first CSS zmienił moje życie. Przestałem walczyć z ogromnymi plikami CSS i zacząłem budować nowoczesne, czyste interfejsy błyskawicznie, bezpośrednio w HTML.",
+                points: ["Utility-First", "Szybki development", "Czysty kod"],
+                color: "cyan"
+            },
+            {
+                label: "RWD Focus",
+                title: "Świat Mobile",
+                subtitle: "Etap 06 // Responsywność",
+                description: "Dopasowanie strony do każdego urządzenia stało się moją obsesją. Moje projekty zachwycają zarówno na iPhone'ach, jak i na dużych monitorach dzięki precyzyjnemu RWD.",
+                points: ["Mobile First", "Flex & Grid", "Media Queries"],
+                color: "indigo"
+            },
+            {
+                label: "GitHub",
+                title: "Potęga Gituba",
+                subtitle: "Etap 07 // Wersjonowanie",
+                description: "Wprowadzenie Gita do codziennej pracy pozwoliło mi na bezpieczne eksperymenty. GitHub to teraz mój poligon, gdzie analizuję kod najlepszych programistów na świecie.",
+                points: ["Kontrola wersji", "Open Source", "Repozytoria"],
+                color: "orange"
+            },
+            {
+                label: "AI Power",
+                title: "Cursor & AI",
+                subtitle: "Etap 08 // Efektywność",
+                description: "Zacząłem traktować Cursor AI jako partnera do pair-programmingu. AI nie zastępuje mojego myślenia, ale turbodoładowuje moją kreatywność i przyspiesza nudne zadania.",
+                points: ["AI-First Workflow", "Szybsze prototypowanie", "Modern IDE"],
+                color: "amber"
+            },
+            {
+                label: "Clean Code",
+                title: "Semantyka HTML",
+                subtitle: "Etap 09 // Jakość",
+                description: "Przestałem pisać kod, który 'tylko działa'. Zacząłem dbać o semantykę i czytelność. Każdy znacznik ma znaczenie, a mój kod stał się moją najlepszą wizytówką.",
+                points: ["Semantyka", "Dostępność (A11y)", "Czytelność kodu"],
+                color: "lime"
+            },
+            {
+                label: "Portfolio",
+                title: "Realne Projekty",
+                subtitle: "Etap 10 // Start",
+                description: "Dziś buduję swoją markę i realizuję pierwsze zlecenia. Każdy nowy projekt to szansa, by udowodnić, że pasja i determinacja 14-latka mogą dostarczyć profesjonalną wartość.",
+                points: ["Budowanie marki", "Zadowoleni klienci", "Dalszy rozwój"],
+                color: "rose"
+            }
+        ];
+
+        function initDial() {
+            const dial = document.getElementById('path-dial');
+            const stepNav = document.getElementById('step-nav');
+            if (!dial) return;
+            
+            dial.innerHTML = '';
+            if (stepNav) stepNav.innerHTML = '';
+
+            stages.forEach((stage, i) => {
+                const angle = i * 36; // 360 / 10
+                const div = document.createElement('div');
+                div.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2';
+                
+                // Position pod on the circle
+                const isMobile = window.innerWidth < 768;
+                const distance = isMobile ? 160 : 240;
+                div.style.transform = `rotate(${angle}deg) translateY(-${distance}px)`;
+                
+                div.innerHTML = `
+                    <div class="pod-animate">
+                        <button onclick="selectStage(${i})" 
+                                class="w-16 h-16 md:w-20 md:h-20 rounded-2xl glass border border-white/10 flex flex-col items-center justify-center p-2 text-center hover:scale-110 hover:border-blue-500/50 transition-all bg-dark-900 shadow-xl group/btn" 
+                                data-stage="${i}">
+                            <p class="text-[8px] md:text-[10px] font-bold text-gray-500 uppercase tracking-tighter leading-tight group-hover/btn:text-blue-400 transition-colors">${stage.label}</p>
+                        </button>
+                    </div>
+                `;
+                dial.appendChild(div);
+
+                if (stepNav) {
+                    const stepBtn = document.createElement('button');
+                    stepBtn.onclick = () => selectStage(i);
+                    stepBtn.className = `w-8 h-1.5 rounded-full transition-all duration-500 ${i === 0 ? 'bg-blue-500 w-12' : 'bg-white/10 hover:bg-white/20'}`;
+                    stepBtn.setAttribute('data-step', i);
+                    stepBtn.title = stage.label;
+                    stepNav.appendChild(stepBtn);
+                }
+            });
+            
+            // Initial selection
+            selectStage(0);
+        }
+
+        function selectStage(index) {
+            const card = document.getElementById('stage-card');
+            const content = document.getElementById('stage-content');
+            
+            // Update active states
+            document.querySelectorAll('[data-stage]').forEach(btn => {
+                btn.classList.remove('active-stage');
+                btn.classList.add('border-white/10');
+            });
+            const activeBtn = document.querySelector(`[data-stage="${index}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active-stage');
+                activeBtn.classList.remove('border-white/10');
+            }
+
+            // Update Step Navigator
+            document.querySelectorAll('[data-step]').forEach((step, i) => {
+                if (i === index) {
+                    step.classList.add('bg-blue-500', 'w-12');
+                    step.classList.remove('bg-white/10', 'w-8');
+                } else {
+                    step.classList.remove('bg-blue-500', 'w-12');
+                    step.classList.add('bg-white/10', 'w-8');
+                }
+            });
+
+            // Update Content
+            card.style.opacity = '0';
+            card.style.filter = 'blur(10px)';
+            card.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                const stage = stages[index];
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="inline-flex px-3 py-1 rounded-lg bg-${stage.color}-500/10 text-${stage.color}-400 text-[10px] font-bold uppercase tracking-widest">${stage.subtitle}</div>
+                        <h3 class="text-3xl font-bold text-white tracking-tight">${stage.title}</h3>
+                        <p class="text-gray-400 leading-relaxed text-lg italic">
+                            "${stage.description}"
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            ${stage.points.map(p => `
+                                <div class="px-3 py-1.5 rounded-xl bg-white/5 border border-white/5 text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-${stage.color}-500"></span>
+                                    ${p}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                card.style.opacity = '1';
+                card.style.filter = 'blur(0)';
+                card.style.transform = 'translateY(0)';
+            }, 300);
+        }
+
+        // Linux Section Logic
+        const linuxPoints = [
+            {
+                title: "Terminal Mastery",
+                summary: "Totalna kontrola nad systemem.",
+                description: "Terminal w Linuxie to nie dodatek, to serce systemu. Dzięki niemu możesz zautomatyzować każdą czynność, od zarządzania plikami po deployment aplikacji, używając potężnych narzędzi takich jak bash, zsh czy grep.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`
+            },
+            {
+                title: "Package Management",
+                summary: "Instalacja narzędzi w sekundy.",
+                description: "Zapomnij o szukaniu instalatorów w sieci. Dzięki menedżerom takim jak apt, pacman czy dnf, instalacja VS Code, Dockera czy Node.js to kwestia jednej komendy. System dba o zależności za Ciebie.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>`
+            },
+            {
+                title: "Wydajność (Performance)",
+                summary: "Twoje podzespoły odetchną.",
+                description: "Linux zużywa ułamek zasobów, które pożera Windows. Brak zbędnych procesów w tle oznacza więcej RAM-u dla Twojego IDE i szybszą kompilację kodu, co na laptopach takich jak Acer robi ogromną różnicę.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`
+            },
+            {
+                title: "Natywny Docker",
+                summary: "Kontenery bez kompromisów.",
+                description: "Na Linuxie Docker działa natywnie na jądrze systemu, a nie w maszynie wirtualnej. Wynik? Błyskawiczne uruchamianie kontenerów i brak spadków wydajności, które są plagą na innych systemach.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a2 2 0 00-1.96 1.414l-.727 2.903a2 2 0 01-1.303 1.341l-2.903.727a2 2 0 01-1.414-1.96l.477-2.387a2 2 0 00-.547-1.022L6.152 13.08a2 2 0 01-1.341-1.303l-.727-2.903a2 2 0 011.96-1.414l2.387.477a2 2 0 001.022.547l2.359.472a2 2 0 011.303 1.341l.727 2.903a2 2 0 011.414 1.96l-.477 2.387a2 2 0 00.547 1.022l2.359.472a2 2 0 001.96-1.414l.727-2.903a2 2 0 001.303-1.341l2.903-.727a2 2 0 001.414-1.96l-.477-2.387z"/></svg>`
+            },
+            {
+                title: "Personalizacja (UI/UX)",
+                summary: "System wygląda tak, jak Ty chcesz.",
+                description: "Od minimalistycznych tiling window managerów po rozbudowane środowiska jak KDE. Możesz dostosować każdy piksel swojego pulpitu, tworząc idealne, nieodwracające uwagi środowisko pracy.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>`
+            },
+            {
+                title: "Brak Bloatware",
+                summary: "Zero śmieci, same narzędzia.",
+                description: "Większość dystrybucji Linuxa przychodzi z absolutnym minimum. Nie znajdziesz tu preinstalowanych gier czy niepotrzebnych aplikacji, które tylko zajmują miejsce i obciążają procesor.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`
+            },
+            {
+                title: "Server Parity",
+                summary: "Pisz kod tam, gdzie będzie żył.",
+                description: "Prawie wszystkie serwery produkcyjne działają na Linuxie. Pracując na tym samym systemie u siebie, unikasz błędów wynikających z różnic w systemach plików czy uprawnieniach. 'U mnie działa' nabiera sensu.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>`
+            },
+            {
+                title: "Open Source",
+                summary: "Wolność i edukacja.",
+                description: "Linux jest otwarty. Możesz zajrzeć w kod każdej biblioteki czy sterownika. To najlepsza szkoła programowania – zrozumienie jak system zarządza pamięcią czy procesami uczy pokory i kunsztu.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`
+            },
+            {
+                title: "Prywatność (Privacy)",
+                summary: "System, który Cię nie śledzi.",
+                description: "Zero telemetrii, zero wysyłania Twoich danych do korporacji. W Linuxie Ty jesteś właścicielem swoich danych i to Ty decydujesz, jakie informacje opuszczają Twoją maszynę.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`
+            },
+            {
+                title: "Automatyzacja",
+                summary: "Uczyń komputer sługą.",
+                description: "Dzięki prostym skryptom shellowym możesz zautomatyzować setup projektu, robienie backupów czy czyszczenie środowiska. Linux zachęca do lenistwa programistycznego w najlepszym wydaniu.",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`
+            }
+        ];
+
+        function initLinuxSection() {
+            const listContainer = document.getElementById('linux-points-list');
+            if (!listContainer) return;
+
+            linuxPoints.forEach((point, i) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectLinuxPoint(i);
+                btn.className = `w-full text-left p-4 rounded-2xl glass border border-white/5 hover:border-emerald-500/30 transition-all group linux-point-btn`;
+                btn.setAttribute('data-linux-idx', i);
+                btn.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                            ${point.icon}
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">${point.title}</h4>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-wider">${point.summary}</p>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(btn);
+            });
+
+            selectLinuxPoint(0);
+        }
+
+        function selectLinuxPoint(index) {
+            const content = document.getElementById('linux-detail-content');
+            const card = document.getElementById('linux-detail-card');
+            if (!content || !card) return;
+
+            // Update Active State
+            document.querySelectorAll('.linux-point-btn').forEach((btn, i) => {
+                if (i === index) {
+                    btn.classList.add('border-emerald-500/50', 'bg-emerald-500/5');
+                    btn.classList.remove('border-white/5');
+                } else {
+                    btn.classList.remove('border-emerald-500/50', 'bg-emerald-500/5');
+                    btn.classList.add('border-white/5');
+                }
+            });
+
+            // Animate Content Change
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                const point = linuxPoints[index];
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="w-20 h-20 rounded-3xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-8">
+                            ${point.icon.replace('w-6 h-6', 'w-10 h-10')}
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold text-white tracking-tight">${point.title}</h3>
+                        <div class="h-1 w-20 bg-emerald-500 rounded-full"></div>
+                        <p class="text-gray-400 text-lg leading-relaxed">
+                            ${point.description}
+                        </p>
+                        <div class="pt-8 flex items-center gap-4 text-emerald-500 font-bold text-xs uppercase tracking-widest">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            To jest standard pro programisty
+                        </div>
+                    </div>
+                `;
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }, 200);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDial();
+            initLinuxSection();
+        });
+
+        // Custom Cursor Logic
+        const cursorDot = document.querySelector("[data-cursor-dot]");
+        const cursorOutline = document.querySelector("[data-cursor-outline]");
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let dotX = 0;
+        let dotY = 0;
+        let outlineX = 0;
+        let outlineY = 0;
+
+        window.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Smooth follow for outline and dot
+        function animate() {
+            // Smooth dot follow
+            dotX += (mouseX - dotX) * 0.25;
+            dotY += (mouseY - dotY) * 0.25;
+
+            // Smooth outline follow
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+
+            cursorDot.style.transform = `translate3d(${dotX - 3}px, ${dotY - 3}px, 0)`;
+            cursorOutline.style.transform = `translate3d(${outlineX - 15}px, ${outlineY - 15}px, 0)`;
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Hover effects
+        const interactiveElements = 'a, button, [onclick], .group, .project-card, .glass';
+        document.querySelectorAll(interactiveElements).forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-active'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-active'));
+        });
+    </script>
+</body>
+</html>

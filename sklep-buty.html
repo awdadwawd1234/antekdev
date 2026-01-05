@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VELOCITY | Premium Sport Shoes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- EmailJS client for client-side sending (configure IDs below) -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
+    <!-- SMTPJS for direct client-side SMTP (requires SecureToken) -->
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: '#ccff00',
+                        dark: '#121212',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            color: transparent;
+        }
+        /* Map and van styles */
+        #map-container { position: relative; }
+        #map-container img { object-fit: contain; width: 100%; height: 100%; background: #f6faf6; }
+        #van { position: absolute; width: 48px; height: 48px; display:flex; align-items:center; justify-content:center; transform: translate(0,0); font-size:20px; box-shadow: 0 8px 20px rgba(17,24,39,0.2); border-radius:8px; background:linear-gradient(180deg,#111827,#374151); color:#f8fafc; }
+        @media (min-width: 768px) { #map-container { height: 380px; } }
+    </style>
+</head>
+<body class="bg-white text-dark font-sans overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-black italic tracking-tighter">VELOCITY</div>
+            <div class="hidden md:flex space-x-8 font-bold uppercase text-xs tracking-widest" id="main-nav">
+                <a href="#" class="nav-link hover:text-neon transition text-neon active" data-filter="shoes">Buty</a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <i data-lucide="search" class="w-5 h-5 cursor-pointer"></i>
+                <div class="relative cursor-pointer" id="cart-trigger">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-neon text-dark text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </div>
+                <i data-lucide="user" class="w-5 h-5 cursor-pointer" id="auth-trigger"></i>
+                <i data-lucide="menu" class="md:hidden w-6 h-6 cursor-pointer"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center pt-20 bg-dark overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black italic text-outline whitespace-nowrap uppercase">
+                Just Move It
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 w-full relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div class="text-white">
+                <span class="text-neon font-bold uppercase tracking-widest mb-4 block">Nowa Kolekcja 2026</span>
+                <h1 class="text-6xl md:text-8xl font-black uppercase leading-tight mb-8">
+                    Szybkość <br> Bez <br> Granic
+                </h1>
+                <p class="text-gray-400 max-w-md mb-10 text-lg">
+                    Odkryj nową generację butów sportowych zaprojektowanych dla tych, którzy nigdy się nie zatrzymują.
+                </p>
+                <button class="bg-neon text-dark px-10 py-4 font-black uppercase tracking-tighter hover:scale-105 transition-transform">
+                    Kup teraz
+                </button>
+            </div>
+            <div class="relative group">
+                <div class="absolute -inset-4 bg-neon/20 blur-3xl rounded-full group-hover:bg-neon/30 transition duration-1000"></div>
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1000" alt="Sport Shoe" class="relative z-10 rotate-[-15deg] drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] group-hover:rotate-0 transition-transform duration-700">
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="py-24 max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-end mb-16">
+            <div>
+                <h2 class="text-4xl font-black uppercase italic">Wybrane dla Ciebie</h2>
+                <div class="h-1.5 w-20 bg-neon mt-4"></div>
+            </div>
+            <a href="#" class="font-bold uppercase text-sm border-b-2 border-dark pb-1">Zobacz wszystko</a>
+        </div>
+        <div class="grid md:grid-cols-3 gap-10">
+            <!-- Product 1 -->
+            <div class="group cursor-pointer product-card" data-name="Phantom Air Max" data-price="599" data-category="Bieganie / Męskie" data-image="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute top-4 left-4 bg-dark text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">Nowość</div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Phantom Air Max</h3>
+                        <p class="text-gray-500 text-sm italic">Bieganie / Męskie</p>
+                    </div>
+                    <span class="font-black text-xl">599 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+            <!-- Product 2 -->
+            <div class="group cursor-pointer product-card" data-name="Neon Strike GT" data-price="429" data-category="Trening / Kobiety" data-image="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Neon Strike GT</h3>
+                        <p class="text-gray-500 text-sm italic">Trening / Kobiety</p>
+                    </div>
+                    <span class="font-black text-xl">429 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+            <!-- Product 3 -->
+            <div class="group cursor-pointer product-card" data-name="Urban Runner Pro" data-price="349" data-category="Streetwear / Unisex" data-image="https://images.unsplash.com/photo-1512374382149-233c42b6a83b?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1512374382149-233c42b6a83b?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute top-4 left-4 bg-neon text-dark text-[10px] font-bold px-3 py-1 uppercase tracking-widest">Bestseller</div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Urban Runner Pro</h3>
+                        <p class="text-gray-500 text-sm italic">Streetwear / Unisex</p>
+                    </div>
+                    <span class="font-black text-xl">349 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+            <!-- Product 4 -->
+            <div class="group cursor-pointer product-card" data-name="Shadow Elite" data-price="679" data-category="Pro / Męskie" data-image="https://images.unsplash.com/photo-1597044768515-31a2ceec81c4?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1597044768515-31a2ceec81c4?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Shadow Elite</h3>
+                        <p class="text-gray-500 text-sm italic">Pro / Męskie</p>
+                    </div>
+                    <span class="font-black text-xl">679 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+            <!-- Product 5 -->
+            <div class="group cursor-pointer product-card" data-name="Solar Flare X" data-price="519" data-category="Running / Damskie" data-image="https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute top-4 left-4 bg-dark text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">Limitowana edycja</div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Solar Flare X</h3>
+                        <p class="text-gray-500 text-sm italic">Running / Damskie</p>
+                    </div>
+                    <span class="font-black text-xl">519 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+            <!-- Product 6 -->
+            <div class="group cursor-pointer product-card" data-name="Ice Breaker High" data-price="899" data-category="Outdoor / Unisex" data-image="https://images.unsplash.com/photo-1520639889313-7272a74b1c73?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1520639889313-7272a74b1c73?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Ice Breaker High</h3>
+                        <p class="text-gray-500 text-sm italic">Outdoor / Unisex</p>
+                    </div>
+                    <span class="font-black text-xl">899 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+            <!-- Product 7 (Fikcyjny) -->
+            <div class="group cursor-pointer product-card" data-name="Meteor Flash 3000" data-price="749" data-category="Bieganie / Unisex" data-image="https://images.unsplash.com/photo-1602810318089-3f8ea1b7a5d9?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1602810318089-3f8ea1b7a5d9?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute top-4 left-4 bg-neon text-dark text-[10px] font-bold px-3 py-1 uppercase tracking-widest">Nowość</div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Meteor Flash 3000</h3>
+                        <p class="text-gray-500 text-sm italic">Bieganie / Unisex</p>
+                    </div>
+                    <span class="font-black text-xl">749 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+            <!-- Product 8 (Fikcyjny) -->
+            <div class="group cursor-pointer product-card" data-name="Aurora Glide XL" data-price="629" data-category="Lifestyle / Kobiety" data-image="https://images.unsplash.com/photo-1542293787938-c9e299b88011?auto=format&fit=crop&q=80&w=800">
+                <div class="bg-gray-100 aspect-square overflow-hidden mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1542293787938-c9e299b88011?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-xl uppercase italic">Aurora Glide XL</h3>
+                        <p class="text-gray-500 text-sm italic">Lifestyle / Kobiety</p>
+                    </div>
+                    <span class="font-black text-xl">629 PLN</span>
+                </div>
+                <button class="mt-4 w-full border-2 border-dark py-3 font-bold uppercase text-xs hover:bg-dark hover:text-white transition add-to-cart">Dodaj do koszyka</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section class="bg-dark py-24 text-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-5xl font-black uppercase mb-8 italic">Technologia Przyszłości</h2>
+                    <p class="text-gray-400 mb-12 text-lg leading-relaxed">
+                        Nasze laboratorium nieustannie przesuwa granice tego, co możliwe w obuwiu sportowym. Stawiamy na innowacje, które poczujesz przy każdym kroku.
+                    </p>
+                    <div class="space-y-8">
+                        <div class="flex gap-6">
+                            <div class="w-14 h-14 bg-neon/10 border border-neon/20 flex items-center justify-center shrink-0">
+                                <i data-lucide="wind" class="text-neon w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold uppercase italic mb-2">Aero-Core™</h4>
+                                <p class="text-gray-500 text-sm">Ultra-lekka podeszwa zapewniająca zwrot energii na poziomie 95%.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="w-14 h-14 bg-neon/10 border border-neon/20 flex items-center justify-center shrink-0">
+                                <i data-lucide="shield" class="text-neon w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold uppercase italic mb-2">Titan-Weave™</h4>
+                                <p class="text-gray-500 text-sm">Niezniszczalna cholewka, która dopasowuje się do stopy jak druga skóra.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=1000" class="grayscale hover:grayscale-0 transition duration-700">
+                    <div class="absolute -bottom-10 -right-10 bg-neon text-dark p-8 hidden md:block">
+                        <div class="text-4xl font-black italic mb-2">95%</div>
+                        <div class="text-[10px] font-bold uppercase tracking-widest">Zwrotu energii</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 w-full md:w-[450px] bg-white z-[60] transform translate-x-full transition-transform duration-500 shadow-2xl flex flex-col">
+        <div class="p-8 border-b flex justify-between items-center">
+            <h2 class="text-2xl font-black uppercase italic">Twój Koszyk</h2>
+            <button id="cart-close" class="p-2 hover:bg-gray-100 transition rounded-full">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        
+        <div id="cart-items" class="flex-grow overflow-y-auto p-8 space-y-6">
+            <!-- Items will be injected here -->
+            <p class="text-gray-500 italic text-center py-20">Twój koszyk jest pusty</p>
+        </div>
+
+        <div id="cart-payment" class="hidden p-8 space-y-6 overflow-y-auto flex-grow bg-gray-50">
+            <h3 class="text-xl font-black uppercase italic mb-4">Płatność i Dostawa</h3>
+            
+            <div class="space-y-4">
+                <div class="bg-white p-4 border rounded-xl">
+                    <label class="block text-[10px] font-black uppercase tracking-widest mb-4">Metoda Płatności</label>
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-lg">
+                        <button onclick="showPayment('blik')" id="tab-blik" class="payment-tab py-2 text-xs font-bold uppercase rounded-md transition bg-white shadow-sm">BLIK</button>
+                        <button onclick="showPayment('card')" id="tab-card" class="payment-tab py-2 text-xs font-bold uppercase rounded-md transition">Karta</button>
+                    </div>
+                </div>
+
+                <!-- BLIK Panel -->
+                <div id="content-blik" class="payment-content space-y-4">
+                    <div class="bg-white p-6 border rounded-xl">
+                        <div class="flex justify-center mb-6">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/BLIK_logo.svg/1200px-BLIK_logo.svg.png" class="h-8">
+                        </div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2 text-center">Wpisz kod BLIK</label>
+                        <input id="blik-code" type="text" maxlength="6" class="w-full text-center text-3xl font-black tracking-[1em] border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="000000">
+                        <button id="blik-pay-btn" class="w-full bg-dark text-white py-4 font-black uppercase tracking-widest hover:bg-neon hover:text-dark transition mt-6">
+                            Zapłać teraz
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card Panel -->
+                <div id="content-card" class="payment-content hidden space-y-4">
+                    <div class="bg-white p-6 border rounded-xl space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Numer karty</label>
+                            <input id="card-number" type="text" class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="0000 0000 0000 0000">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Data ważności</label>
+                                <input id="card-exp" type="text" class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="MM/YY">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest mb-2">CVV</label>
+                                <input id="card-cvv" type="text" class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="000">
+                            </div>
+                        </div>
+                        <button id="card-pay-btn" class="w-full bg-dark text-white py-4 font-black uppercase tracking-widest hover:bg-neon hover:text-dark transition mt-2">
+                            Autoryzuj kartę
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recipient Info -->
+                <div class="bg-white p-6 border rounded-xl space-y-4">
+                    <h4 class="text-xs font-black uppercase tracking-widest border-b pb-2">Dane Odbiorcy</h4>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Imię i Nazwisko</label>
+                        <input id="recipient-name" type="text" class="w-full border-2 border-gray-100 p-3 text-sm focus:border-dark outline-none" placeholder="Jan Kowalski">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Email (do powiadomień)</label>
+                        <input id="recipient-email" type="email" class="w-full border-2 border-gray-100 p-3 text-sm focus:border-dark outline-none" placeholder="email@przyklad.pl">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Ulica i numer</label>
+                        <input id="recipient-street" type="text" class="w-full border-2 border-gray-100 p-3 text-sm focus:border-dark outline-none" placeholder="ul. Sezamkowa 1/2">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Kod pocztowy</label>
+                            <input id="recipient-postal" type="text" class="w-full border-2 border-gray-100 p-3 text-sm focus:border-dark outline-none" placeholder="00-000">
+                        </div>
+                        <div class="relative">
+                            <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Miasto</label>
+                            <input id="recipient-city" type="text" class="w-full border-2 border-gray-100 p-3 text-sm focus:border-dark outline-none" placeholder="Warszawa" autocomplete="off">
+                            <div id="city-suggestions" class="absolute z-10 w-full bg-white border mt-1 hidden max-h-40 overflow-y-auto shadow-lg text-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-8 bg-gray-50 border-t">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-gray-500 font-bold uppercase text-xs">Suma</span>
+                <span id="cart-total" class="text-3xl font-black">0 PLN</span>
+            </div>
+            <button id="checkout-btn" class="w-full bg-dark text-white py-5 font-black uppercase tracking-widest hover:bg-neon hover:text-dark transition">
+                Przejdź do płatności
+            </button>
+        </div>
+    </div>
+
+    <div id="cart-overlay" class="fixed inset-0 bg-black/40 z-[55] hidden backdrop-blur-sm"></div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md" id="auth-overlay"></div>
+        <div class="relative w-full max-w-md bg-white p-10 rounded-2xl shadow-2xl">
+            <button id="auth-close" class="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div id="login-form">
+                <h2 class="text-3xl font-black uppercase italic mb-2">Witaj ponownie</h2>
+                <p class="text-gray-500 text-sm mb-8">Zaloguj się, aby kontynuować zakupy.</p>
+                <form class="space-y-4" onsubmit="event.preventDefault(); handleLogin();">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Email</label>
+                        <input type="email" required class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="email@przyklad.pl">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Hasło</label>
+                        <input type="password" required class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full bg-dark text-white py-4 font-black uppercase tracking-widest hover:bg-neon hover:text-dark transition mt-4">
+                        Zaloguj się
+                    </button>
+                </form>
+                <p class="text-center mt-6 text-sm">
+                    Nie masz konta? <a href="#" class="font-bold border-b border-dark" id="show-register">Zarejestruj się</a>
+                </p>
+            </div>
+
+            <div id="register-form" class="hidden">
+                <h2 class="text-3xl font-black uppercase italic mb-2">Dołącz do nas</h2>
+                <p class="text-gray-500 text-sm mb-8">Zyskaj dostęp do limitowanych edycji.</p>
+                <form class="space-y-4" onsubmit="event.preventDefault(); handleRegister();">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Imię i Nazwisko</label>
+                        <input id="reg-name" type="text" required class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="Jan Kowalski">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Email</label>
+                        <input id="reg-email" type="email" required class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="email@przyklad.pl">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest mb-2">Hasło</label>
+                        <input type="password" required class="w-full border-2 border-gray-100 p-4 focus:border-dark outline-none transition" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full bg-dark text-white py-4 font-black uppercase tracking-widest hover:bg-neon hover:text-dark transition mt-4">
+                        Stwórz konto
+                    </button>
+                </form>
+                <p class="text-center mt-6 text-sm">
+                    Masz już konto? <a href="#" class="font-bold border-b border-dark" id="show-login">Zaloguj się</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="fixed bottom-10 right-10 z-[70] translate-y-20 opacity-0 transition-all duration-500">
+        <div class="bg-dark text-white px-8 py-4 flex items-center gap-4 shadow-2xl border-l-4 border-neon">
+            <i data-lucide="check-circle" class="text-neon w-5 h-5"></i>
+            <span id="notification-msg" class="font-bold uppercase text-xs tracking-widest">Produkt dodany do koszyka</span>
+        </div>
+    </div>
+
+    <!-- Courier Tracking Modal -->
+    <div id="courier-modal" class="fixed inset-0 z-[80] hidden items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/60" id="courier-overlay"></div>
+        <div class="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl p-6">
+            <button id="courier-close" class="absolute top-4 right-4 text-gray-500">Zamknij ✕</button>
+            <h3 class="text-xl font-black uppercase mb-4">Śledzenie przesyłki</h3>
+            <div class="flex gap-6">
+                <div class="flex-1">
+                    <div id="map-container" class="relative w-full h-64 bg-gradient-to-br from-green-50 to-green-100 overflow-hidden rounded-md border">
+                        <!-- Local map image provided by user -->
+                        <img src="mapapolski.png" alt="Mapa Polski" class="w-full h-full object-cover" />
+                        <div id="van" class="absolute">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="1" y="6" width="14" height="8" rx="1" fill="#111827" />
+                                <rect x="15" y="8" width="6" height="6" rx="1" fill="#111827" />
+                                <circle cx="6.5" cy="15.5" r="1.5" fill="#f3f4f6" />
+                                <circle cx="17.5" cy="15.5" r="1.5" fill="#f3f4f6" />
+                            </svg>
+                        </div>
+                    </div>
+                    <!-- EmailJS config quick settings (store in localStorage) -->
+                    <div class="mt-3">
+                        <button id="emailjs-config-open" class="text-xs text-gray-600 underline">Konfiguracja Email (brak backendu)</button>
+                        <div id="emailjs-config" class="hidden mt-2 p-3 border rounded bg-gray-50">
+                            <label class="text-xs">User ID</label>
+                            <input id="emailjs-user" class="w-full mb-2 p-1 border text-xs" placeholder="EmailJS User ID">
+                            <label class="text-xs">Service ID</label>
+                            <input id="emailjs-service" class="w-full mb-2 p-1 border text-xs" placeholder="Service ID">
+                            <label class="text-xs">Template ID</label>
+                            <input id="emailjs-template" class="w-full mb-2 p-1 border text-xs" placeholder="Template ID">
+                            <label class="text-xs">SMTPJS SecureToken (opcjonalnie)</label>
+                            <input id="emailjs-smtp-token" class="w-full mb-2 p-1 border text-xs" placeholder="SMTPJS SecureToken">
+                            <label class="text-xs">Nadawca (From) — adres e-mail wysyłający</label>
+                            <input id="emailjs-smtp-from" class="w-full mb-2 p-1 border text-xs" placeholder="from@example.com">
+                            <div class="flex gap-2">
+                                <button id="emailjs-save" class="bg-neon text-dark py-1 px-2 text-xs font-bold">Zapisz</button>
+                                <button id="emailjs-send-test" class="bg-gray-200 text-dark py-1 px-2 text-xs font-bold">Wyślij test</button>
+                                <button id="emailjs-mailto-test" class="bg-gray-200 text-dark py-1 px-2 text-xs font-bold">Wyślij mailto</button>
+                                <button id="emailjs-clear" class="bg-gray-100 text-dark py-1 px-2 text-xs">Wyczyść</button>
+                            </div>
+                            <p class="text-[11px] text-gray-500 mt-2">Ustaw dane z https://www.emailjs.com lub SMTPJS (SecureToken) — pozwoli wysyłać powiadomienia bez serwera.</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Status:</p>
+                            <p id="courier-status" class="font-bold">W drodze do paczkomatu</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">Szacowany czas:</p>
+                            <p id="courier-eta" class="font-black text-lg">--:--</p>
+                        </div>
+                    </div>
+                    <!-- Delivery progress bar (stages) -->
+                    <div id="courier-progress" class="mt-4 hidden">
+                        <div id="progress-bar" class="w-full h-3 bg-gray-200 rounded overflow-hidden">
+                            <div id="progress-fill" class="h-3 bg-neon w-0"></div>
+                        </div>
+                        <div id="progress-stages" class="mt-2 text-xs text-gray-500 flex justify-between"></div>
+                    </div>
+                </div>
+                <div class="w-64">
+                    <h4 class="font-bold uppercase text-xs mb-2">Adres dostawy</h4>
+                    <div id="courier-address" class="text-sm text-gray-700 mb-4">Brak danych</div>
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Numer przesyłki:</p>
+                        <p id="courier-tracking" class="font-black">—</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fake BLIK Modal -->
+    <div id="fake-blik-modal" class="fixed inset-0 z-[85] hidden items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/60" id="fake-blik-overlay"></div>
+        <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6">
+            <button id="fake-blik-close" class="absolute top-4 right-4 text-gray-500">✕</button>
+            <h3 class="text-lg font-black uppercase mb-2">BLIK - Potwierdź płatność</h3>
+            <p class="text-sm text-gray-500 mb-4">Aplikacja bankowa (fikcyjna). Potwierdź kodem:</p>
+            <div id="fake-blik-code" class="text-4xl font-black text-center mb-4">000000</div>
+            <div class="flex gap-2">
+                <button id="fake-blik-confirm" class="flex-1 bg-neon text-dark py-2 font-black uppercase">Potwierdź</button>
+                <button id="fake-blik-cancel" class="flex-1 bg-gray-200 text-dark py-2 font-black uppercase">Anuluj</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fake Card Modal -->
+    <div id="fake-card-modal" class="fixed inset-0 z-[85] hidden items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/60" id="fake-card-overlay"></div>
+        <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6">
+            <button id="fake-card-close" class="absolute top-4 right-4 text-gray-500">✕</button>
+            <h3 class="text-lg font-black uppercase mb-2">Autoryzacja karty (fikcyjna)</h3>
+            <p id="fake-card-desc" class="text-sm text-gray-500 mb-4">Sprawdź dane i potwierdź.</p>
+            <div class="flex gap-2">
+                <button id="fake-card-confirm" class="flex-1 bg-neon text-dark py-2 font-black uppercase">Potwierdź</button>
+                <button id="fake-card-cancel" class="flex-1 bg-gray-200 text-dark py-2 font-black uppercase">Anuluj</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-20">
+                <div class="col-span-2 md:col-span-1">
+                    <div class="text-3xl font-black italic tracking-tighter mb-8">VELOCITY</div>
+                    <p class="text-gray-500 leading-relaxed">
+                        Tworzymy przyszłość sportu. Każdy produkt to połączenie nauki, designu i pasji do ruchu.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-black uppercase italic mb-8 tracking-widest">Produkty</h4>
+                    <ul class="space-y-4 text-gray-400 font-bold uppercase text-xs tracking-widest">
+                        <li><a href="#" class="hover:text-neon transition">Nowości</a></li>
+                        <li><a href="#" class="hover:text-neon transition">Treningowe</a></li>
+                        <li><a href="#" class="hover:text-neon transition">Streetwear</a></li>
+                        <li><a href="#" class="hover:text-neon transition">Limitowane serie</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-black uppercase italic mb-8 tracking-widest">Pomoc</h4>
+                    <ul class="space-y-4 text-gray-400 font-bold uppercase text-xs tracking-widest">
+                        <li><a href="#" class="hover:text-neon transition">Status zamówienia</a></li>
+                        <li><a href="#" class="hover:text-neon transition">Wysyłka i dostawa</a></li>
+                        <li><a href="#" class="hover:text-neon transition">Zwroty</a></li>
+                        <li><a href="#" class="hover:text-neon transition">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-black uppercase italic mb-8 tracking-widest">Social Media</h4>
+                    <div class="flex gap-6 mb-12">
+                        <a href="#" class="hover:text-neon transition"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="hover:text-neon transition"><i data-lucide="facebook"></i></a>
+                        <a href="#" class="hover:text-neon transition"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="hover:text-neon transition"><i data-lucide="youtube"></i></a>
+                    </div>
+                    <div class="flex flex-wrap gap-4 grayscale opacity-50">
+                        <div class="border border-gray-700 px-2 py-1 text-[8px] font-black italic">VISA</div>
+                        <div class="border border-gray-700 px-2 py-1 text-[8px] font-black italic">MASTERCARD</div>
+                        <div class="border border-gray-700 px-2 py-1 text-[8px] font-black italic">BLIK</div>
+                        <div class="border border-gray-700 px-2 py-1 text-[8px] font-black italic">PAYPAL</div>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-12 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-8">
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest">&copy; 2026 VELOCITY INC. WSZELKIE PRAWA ZASTRZEŻONE.</p>
+                <div class="flex gap-8 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
+                    <a href="#" class="hover:text-white transition">Regulamin</a>
+                    <a href="#" class="hover:text-white transition">Polityka prywatności</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Product filter (nav tabs) - map filter keys to searchable keywords
+        (function setupProductFilters(){
+            const mapping = {
+                all: [],
+                shoes: ['but', 'bieganie', 'running', 'sneaker', 'shoe', 'runner', 'outdoor'],
+                clothing: ['odzie', 'trening', 'clothing', 'apparel', 'streetwear'],
+                accessories: ['akcesoria', 'accessory', 'accessories']
+            };
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const cards = Array.from(document.querySelectorAll('.product-card'));
+
+            function applyFilter(key){
+                // update active class on nav links
+                navLinks.forEach(n => {
+                    if(n.dataset.filter === key){
+                        n.classList.add('text-neon');
+                        n.classList.add('active');
+                    } else {
+                        n.classList.remove('text-neon');
+                        n.classList.remove('active');
+                    }
+                });
+
+                const keywords = mapping[key] || [];
+                cards.forEach(card => {
+                    try{
+                        const cat = (card.dataset.category || '').toString().toLowerCase();
+                        const name = (card.dataset.name || '').toString().toLowerCase();
+                        if(key === 'all'){
+                            card.style.display = '';
+                            return;
+                        }
+                        // show card if any keyword matches category or name
+                        const match = keywords.some(k => cat.includes(k) || name.includes(k));
+                        card.style.display = match ? '' : 'none';
+                    }catch(e){ card.style.display = ''; }
+                });
+            }
+
+            if(navLinks.length){
+                navLinks.forEach(n => n.addEventListener('click', function(e){
+                    e.preventDefault();
+                    const f = (this.dataset.filter || 'all').toString();
+                    applyFilter(f);
+                }));
+                // initialize default (look for one with data-filter="all" or first)
+                const active = Array.from(navLinks).find(n=>n.dataset.filter==='all') || navLinks[0];
+                if(active) applyFilter(active.dataset.filter || 'all');
+            }
+        })();
+
+        // Cart State
+        let cart = [];
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartContent = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+        const cartTrigger = document.getElementById('cart-trigger');
+        const cartClose = document.getElementById('cart-close');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const checkoutBtn = document.getElementById('checkout-btn');
+
+        // Auth State
+        const authModal = document.getElementById('auth-modal');
+        const authTrigger = document.getElementById('auth-trigger');
+        const authClose = document.getElementById('auth-close');
+        const authOverlay = document.getElementById('auth-overlay');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegister = document.getElementById('show-register');
+        const showLogin = document.getElementById('show-login');
+
+        function toggleCart() {
+            cartDrawer.classList.toggle('translate-x-full');
+            cartOverlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+            if (!cartDrawer.classList.contains('translate-x-full')) {
+                // If opening, ensure we're not in payment panel
+                const items = document.getElementById('cart-items');
+                const paymentPanel = document.getElementById('cart-payment');
+                items.classList.remove('hidden');
+                paymentPanel.classList.add('hidden');
+                checkoutBtn.textContent = 'Przejdź do płatności';
+            }
+        }
+
+        function updateCartUI() {
+            cartCount.textContent = cart.length;
+            cartCount.classList.toggle('hidden', cart.length === 0);
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = '<p class="text-gray-500 italic text-center py-20">Twój koszyk jest pusty</p>';
+                cartTotal.textContent = '0 PLN';
+                return;
+            }
+
+            cartContent.innerHTML = cart.map((item, index) => `
+                <div class="flex gap-4 items-center bg-gray-50 p-4 rounded-xl">
+                    <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg">
+                    <div class="flex-grow">
+                        <h4 class="font-bold uppercase italic text-sm">${item.name}</h4>
+                        <p class="text-gray-500 text-xs">${item.category}</p>
+                        <p class="font-black mt-1">${item.price} PLN</p>
+                    </div>
+                    <button onclick="removeFromCart(${index})" class="text-gray-400 hover:text-dark">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            `).join('');
+            
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            cartTotal.textContent = `${total} PLN`;
+            lucide.createIcons();
+        }
+
+        function addToCart(product) {
+            cart.push(product);
+            updateCartUI();
+            showNotification('Dodano do koszyka');
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function showNotification(msg) {
+            const toast = document.getElementById('notification');
+            const toastMsg = document.getElementById('notification-msg');
+            toastMsg.textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function handleLogin() {
+            showNotification('Zalogowano pomyślnie (demo)');
+            closeAuth();
+        }
+
+        function handleRegister() {
+            showNotification('Konto utworzone (demo)');
+            closeAuth();
+        }
+
+        checkoutBtn.addEventListener('click', () => {
+            if (cart.length === 0) {
+                showNotification('Koszyk jest pusty');
+                return;
+            }
+            const paymentPanel = document.getElementById('cart-payment');
+            const items = document.getElementById('cart-items');
+            if (paymentPanel.classList.contains('hidden')) {
+                items.classList.add('hidden');
+                paymentPanel.classList.remove('hidden');
+                checkoutBtn.textContent = 'Wróć do koszyka';
+            } else {
+                paymentPanel.classList.add('hidden');
+                items.classList.remove('hidden');
+                checkoutBtn.textContent = 'Przejdź do płatności';
+            }
+        });
+
+        // Auth Functions
+        function openAuth() {
+            authModal.classList.remove('hidden');
+        }
+
+        function closeAuth() {
+            authModal.classList.add('hidden');
+        }
+
+        // Event Listeners
+        cartTrigger.addEventListener('click', toggleCart);
+        cartClose.addEventListener('click', toggleCart);
+        cartOverlay.addEventListener('click', toggleCart);
+
+        authTrigger.addEventListener('click', openAuth);
+        authClose.addEventListener('click', closeAuth);
+        authOverlay.addEventListener('click', closeAuth);
+
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const card = btn.closest('.product-card');
+                const product = {
+                    name: card.dataset.name,
+                    price: parseInt(card.dataset.price),
+                    category: card.dataset.category,
+                    image: card.dataset.image
+                };
+                addToCart(product);
+            });
+        });
+
+        function showPayment(method) {
+            // Hide all content
+            document.querySelectorAll('.payment-content').forEach(el => el.classList.add('hidden'));
+            // Remove active classes from tabs
+            document.querySelectorAll('.payment-tab').forEach(el => {
+                el.classList.remove('bg-white', 'shadow-sm', 'border-gray-200');
+                el.classList.add('bg-transparent', 'border-transparent');
+            });
+
+            // Show selected content
+            const contentEl = document.getElementById('content-' + method);
+            if (contentEl) {
+                contentEl.classList.remove('hidden');
+                // focus first input inside shown panel for convenience
+                const input = contentEl.querySelector('input');
+                if (input) input.focus();
+            }
+
+            // Style active tab
+            const activeTab = document.getElementById('tab-' + method);
+            if (activeTab) {
+                activeTab.classList.remove('bg-transparent', 'border-transparent');
+                activeTab.classList.add('bg-white', 'shadow-sm', 'border-gray-200');
+            }
+        }
+
+        // Fake payment handlers (delegated) and processing
+        function processFakePayment(message) {
+            showNotification('Przetwarzanie płatności...');
+            setTimeout(() => {
+                showNotification(message);
+                // collect recipient address
+                const name = (document.getElementById('recipient-name') || {}).value || '';
+                const street = (document.getElementById('recipient-street') || {}).value || '';
+                const postal = (document.getElementById('recipient-postal') || {}).value || '';
+                const city = (document.getElementById('recipient-city') || {}).value || '';
+                const addressText = `${name}\n${street}\n${postal} ${city}`.trim();
+
+                // choose random ETA between 30 and 60 seconds for quick test (in seconds)
+                const eta = Math.floor(Math.random() * (60 - 30 + 1)) + 30;
+                // determine selected city (from suggestions or typed)
+                const typedCity = (document.getElementById('recipient-city') || {}).value || '';
+                // helper to normalize diacritics and whitespace for reliable comparisons
+                function normalizeStr(s) {
+                    try { return (s || '').toString().normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/\s+/g,' ').trim().toLowerCase(); } catch (e) { return (s||'').toLowerCase(); }
+                }
+                let cityObj = null;
+                if (selectedCity && selectedCity.name && typedCity && normalizeStr(selectedCity.name) === normalizeStr(typedCity)) {
+                    cityObj = selectedCity;
+                } else if (typedCity) {
+                    cityObj = cities.find(c => normalizeStr(c.name) === normalizeStr(typedCity)) || null;
+                }
+                const cityCoord = cityObj ? { x: cityObj.x, y: cityObj.y } : null;
+
+                // clear cart and update UI
+                cart = [];
+                updateCartUI();
+                checkoutBtn.textContent = 'Przejdź do płatności';
+
+                // close cart drawer and open courier modal with tracking
+                if (!cartDrawer.classList.contains('hidden')) toggleCart();
+                // generate tracking number and persist courier state so tracking survives refresh/close
+                const trackingNumber = '#FX' + Math.floor(Math.random() * 900000 + 100000);
+                saveCourierState({ addressText, etaSeconds: eta, startTimestamp: Date.now(), trackingNumber, cityCoord, cityName: cityObj ? cityObj.name : '' });
+                openCourierModal(addressText, eta, trackingNumber, cityObj ? cityObj.name : '', cityCoord);
+            }, 1200);
+        }
+
+        // Delegate clicks for payment buttons to handle dynamic/duplicate elements safely
+        document.addEventListener('click', (e) => {
+            const blikTarget = e.target.closest('#blik-pay-btn');
+            const cardTarget = e.target.closest('#card-pay-btn');
+            if (blikTarget) {
+                const codeEl = document.getElementById('blik-code');
+                const code = codeEl ? codeEl.value.trim() : '';
+                if (!/^[0-9]{6}$/.test(code)) {
+                    showNotification('Wprowadź poprawny, fikcyjny kod BLIK (6 cyfr)');
+                    return;
+                }
+                // open fake BLIK app modal
+                const fakeBlikModal = document.getElementById('fake-blik-modal');
+                const fakeBlikCode = document.getElementById('fake-blik-code');
+                if (fakeBlikModal && fakeBlikCode) {
+                    fakeBlikCode.textContent = code;
+                    fakeBlikModal.classList.remove('hidden');
+                } else {
+                    processFakePayment('Płatność BLIK zakończona (fikcyjnie)');
+                }
+            }
+            if (cardTarget) {
+                const numberEl = document.getElementById('card-number');
+                const expEl = document.getElementById('card-exp');
+                const cvvEl = document.getElementById('card-cvv');
+                const number = numberEl ? numberEl.value.replace(/\s+/g, '') : '';
+                const exp = expEl ? expEl.value.trim() : '';
+                const cvv = cvvEl ? cvvEl.value.trim() : '';
+
+                if (!/^[0-9]{13,19}$/.test(number) || !/^[0-9]{3,4}$/.test(cvv) || !/^\d{2}\/\d{2}$/.test(exp)) {
+                    showNotification('Wprowadź poprawne dane karty (fikcyjne)');
+                    return;
+                }
+                // open fake card modal with masked card
+                const fakeCardModal = document.getElementById('fake-card-modal');
+                const fakeCardDesc = document.getElementById('fake-card-desc');
+                if (fakeCardModal && fakeCardDesc) {
+                    const masked = '**** **** **** ' + number.slice(-4);
+                    fakeCardDesc.textContent = 'Karta: ' + masked + ' • ' + exp;
+                    fakeCardModal.classList.remove('hidden');
+                } else {
+                    processFakePayment('Płatność kartą zakończona (fikcyjnie)');
+                }
+            }
+        });
+
+        // Fake modal controls
+        const fakeBlikModal = document.getElementById('fake-blik-modal');
+        const fakeBlikClose = document.getElementById('fake-blik-close');
+        const fakeBlikCancel = document.getElementById('fake-blik-cancel');
+        const fakeBlikConfirm = document.getElementById('fake-blik-confirm');
+
+        const fakeCardModal = document.getElementById('fake-card-modal');
+        const fakeCardClose = document.getElementById('fake-card-close');
+        const fakeCardCancel = document.getElementById('fake-card-cancel');
+        const fakeCardConfirm = document.getElementById('fake-card-confirm');
+
+        function closeFakeBlik() { fakeBlikModal && fakeBlikModal.classList.add('hidden'); }
+        function closeFakeCard() { fakeCardModal && fakeCardModal.classList.add('hidden'); }
+
+        fakeBlikClose && fakeBlikClose.addEventListener('click', closeFakeBlik);
+        fakeBlikCancel && fakeBlikCancel.addEventListener('click', closeFakeBlik);
+        fakeCardClose && fakeCardClose.addEventListener('click', closeFakeCard);
+        fakeCardCancel && fakeCardCancel.addEventListener('click', closeFakeCard);
+
+        // When confirming in fake modals, proceed with payment and start courier tracking persistence
+        fakeBlikConfirm && fakeBlikConfirm.addEventListener('click', () => {
+            closeFakeBlik();
+            // on confirm, call payment completion
+            processFakePayment('Płatność BLIK zakończona (fikcyjnie)');
+        });
+
+        fakeCardConfirm && fakeCardConfirm.addEventListener('click', () => {
+            closeFakeCard();
+            processFakePayment('Płatność kartą zakończona (fikcyjnie)');
+        });
+
+        // Persistence: save courier tracking to localStorage when started
+        function saveCourierState(obj) {
+            try { localStorage.setItem('velocity_courier', JSON.stringify(obj)); } catch (e) {}
+        }
+
+        function clearCourierState() { try { localStorage.removeItem('velocity_courier'); } catch (e) {} }
+
+        // On load, restore courier tracking if present
+        window.addEventListener('load', () => {
+            try {
+                const data = JSON.parse(localStorage.getItem('velocity_courier') || 'null');
+                if (data && data.etaSeconds && data.startTimestamp) {
+                    const elapsed = Math.floor((Date.now() - data.startTimestamp) / 1000);
+                    const remaining = Math.max(0, data.etaSeconds - elapsed);
+                    if (remaining > 0) {
+                        openCourierModal(data.addressText, remaining, data.trackingNumber, data.cityName, data.cityCoord);
+                    } else {
+                        // show delivered briefly
+                        openCourierModal(data.addressText, 0, data.trackingNumber, data.cityName, data.cityCoord);
+                    }
+                }
+            } catch (e) {}
+        });
+
+        // Cities (normalized coordinates relative to map container: x, y in [0,1])
+        // Expanded city list with approximate normalized positions matching mapapolski.png
+        const cities = [
+            { name: 'Warszawa', x: 0.62, y: 0.42 },
+            { name: 'Kraków', x: 0.60, y: 0.70 },
+            { name: 'Wrocław', x: 0.45, y: 0.62 },
+            { name: 'Poznań', x: 0.40, y: 0.50 },
+            { name: 'Gdańsk', x: 0.72, y: 0.20 },
+            { name: 'Szczecin', x: 0.16, y: 0.18 },
+            { name: 'Lublin', x: 0.78, y: 0.56 },
+            { name: 'Rzeszów', x: 0.86, y: 0.80 },
+            { name: 'Łódź', x: 0.58, y: 0.52 },
+            { name: 'Katowice', x: 0.64, y: 0.66 },
+            { name: 'Bydgoszcz', x: 0.56, y: 0.30 },
+            { name: 'Białystok', x: 0.88, y: 0.24 },
+            { name: 'Olsztyn', x: 0.78, y: 0.18 },
+            { name: 'Toruń', x: 0.52, y: 0.34 },
+            { name: 'Częstochowa', x: 0.58, y: 0.62 },
+            { name: 'Kielce', x: 0.70, y: 0.62 },
+            { name: 'Opole', x: 0.50, y: 0.64 },
+            { name: 'Zielona Góra', x: 0.28, y: 0.60 },
+            { name: 'Koszalin', x: 0.72, y: 0.12 }
+        ];
+
+        let selectedCity = null;
+        const cityInput = document.getElementById('recipient-city');
+        const citySuggestions = document.getElementById('city-suggestions');
+
+        function renderCitySuggestions(filter) {
+            if (!citySuggestions) return;
+            const q = (filter || '').toLowerCase().trim();
+            const matches = cities.filter(c => c.name.toLowerCase().includes(q));
+            if (matches.length === 0) {
+                citySuggestions.classList.add('hidden');
+                citySuggestions.innerHTML = '';
+                return;
+            }
+            citySuggestions.innerHTML = matches.map(c => `<div class="px-3 py-2 hover:bg-gray-100 cursor-pointer" data-name="${c.name}">${c.name}</div>`).join('');
+            citySuggestions.classList.remove('hidden');
+        }
+
+        if (cityInput) {
+            cityInput.addEventListener('input', (e) => {
+                selectedCity = null;
+                renderCitySuggestions(e.target.value);
+            });
+            cityInput.addEventListener('focus', (e) => renderCitySuggestions(e.target.value));
+        }
+
+        if (citySuggestions) {
+            citySuggestions.addEventListener('click', (e) => {
+                const el = e.target.closest('[data-name]');
+                if (!el) return;
+                const name = el.getAttribute('data-name');
+                const city = cities.find(c => c.name === name);
+                if (city && cityInput) {
+                    cityInput.value = city.name;
+                    selectedCity = city;
+                }
+                citySuggestions.classList.add('hidden');
+            });
+        }
+
+        // hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            const inside = e.target.closest('#city-suggestions') || e.target.closest('#recipient-city');
+            if (!inside && citySuggestions) citySuggestions.classList.add('hidden');
+        });
+
+        // Courier tracking functions
+        const courierModal = document.getElementById('courier-modal');
+        const courierOverlay = document.getElementById('courier-overlay');
+        const courierClose = document.getElementById('courier-close');
+        const vanEl = document.getElementById('van');
+        const mapContainer = document.getElementById('map-container');
+        const courierEtaEl = document.getElementById('courier-eta');
+        const courierStatusEl = document.getElementById('courier-status');
+        const courierAddressEl = document.getElementById('courier-address');
+        const courierTrackingEl = document.getElementById('courier-tracking');
+
+        function openCourierModal(addressText, etaSeconds, trackingNumber, cityName, cityCoord) {
+            if (!courierModal) return;
+            courierAddressEl.textContent = addressText || 'Brak danych';
+            courierTrackingEl.textContent = trackingNumber || ('#FX' + Math.floor(Math.random() * 900000 + 100000));
+            courierStatusEl.textContent = (cityName ? `W drodze do ${cityName}` : 'Kurier w drodze');
+            courierEtaEl.textContent = formatEta(etaSeconds);
+            courierModal.classList.remove('hidden');
+            // Start simulated movement and countdown, pass cityCoord (normalized) as target
+            startTracking(etaSeconds, cityCoord);
+        }
+
+        function closeCourierModal() {
+            if (!courierModal) return;
+            courierModal.classList.add('hidden');
+            // reset van position
+            if (vanEl) {
+                vanEl.style.transition = '';
+                vanEl.style.transform = 'translate(0,0)';
+            }
+        }
+
+        if (courierClose) courierClose.addEventListener('click', closeCourierModal);
+        if (courierOverlay) courierOverlay.addEventListener('click', closeCourierModal);
+
+        let trackingInterval = null;
+        function startTracking(totalSeconds, cityCoord) {
+            if (trackingInterval) clearInterval(trackingInterval);
+            let remaining = totalSeconds;
+            
+            // Start position (left-bottom roughly)
+            let startX = 0.2;
+            let startY = 0.8;
+            // Target position (normalized) or default middle
+            let targetX = cityCoord ? cityCoord.x : 0.6;
+            let targetY = cityCoord ? cityCoord.y : 0.4;
+
+            trackingInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    remaining = 0;
+                    clearInterval(trackingInterval);
+                    courierStatusEl.textContent = 'Przesyłka dostarczona!';
+                    // Trigger "delivered" notification/email logic (async)
+                    sendPickupEmailOnDelivery(courierAddressEl.textContent, courierTrackingEl.textContent);
+                    // Clear state after delivery so it doesn't pop up again
+                    clearCourierState();
+                }
+                courierEtaEl.textContent = formatEta(remaining);
+                
+                // Animate van on map
+                const progress = 1 - (remaining / totalSeconds);
+                const currentX = startX + (targetX - startX) * progress;
+                const currentY = startY + (targetY - startY) * progress;
+                
+                if (vanEl && mapContainer) {
+                    const rect = mapContainer.getBoundingClientRect();
+                    // mapContainer height is fixed or proportional, normalize to pixels
+                    vanEl.style.left = (currentX * 100) + '%';
+                    vanEl.style.top = (currentY * 100) + '%';
+                }
+
+                // Update progress bar
+                const fill = document.getElementById('progress-fill');
+                if (fill) fill.style.width = (progress * 100) + '%';
+
+            }, 1000);
+        }
+
+        function formatEta(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        // EmailJS / Backend notification logic
+        function getEmailJsConfig() {
+            return {
+                user: localStorage.getItem('emailjs_user') || '',
+                service: localStorage.getItem('emailjs_service') || '',
+                template: localStorage.getItem('emailjs_template') || '',
+                smtpToken: localStorage.getItem('emailjs_smtp_token') || '',
+                smtpFrom: localStorage.getItem('emailjs_smtp_from') || ''
+            };
+        }
+
+        function loadEmailJsInputs() {
+            try {
+                const cfg = getEmailJsConfig();
+                const u = document.getElementById('emailjs-user');
+                const s = document.getElementById('emailjs-service');
+                const t = document.getElementById('emailjs-template');
+                const tok = document.getElementById('emailjs-smtp-token');
+                const from = document.getElementById('emailjs-smtp-from');
+                if (u) u.value = cfg.user;
+                if (s) s.value = cfg.service;
+                if (t) t.value = cfg.template;
+                if (tok) tok.value = cfg.smtpToken;
+                if (from) from.value = cfg.smtpFrom;
+            } catch (e) {}
+        }
+
+        function saveEmailJsConfig() {
+            try {
+                const u = document.getElementById('emailjs-user').value.trim();
+                const s = document.getElementById('emailjs-service').value.trim();
+                const t = document.getElementById('emailjs-template').value.trim();
+                const tok = document.getElementById('emailjs-smtp-token').value.trim();
+                const from = document.getElementById('emailjs-smtp-from').value.trim();
+                localStorage.setItem('emailjs_user', u);
+                localStorage.setItem('emailjs_service', s);
+                localStorage.setItem('emailjs_template', t);
+                localStorage.setItem('emailjs_smtp_token', tok);
+                localStorage.setItem('emailjs_smtp_from', from);
+                showNotification('Zapisano konfigurację EmailJS');
+                loadEmailJsInputs();
+            } catch (e) { console.warn(e); }
+        }
+
+        function clearEmailJsConfig() {
+            localStorage.removeItem('emailjs_user');
+            localStorage.removeItem('emailjs_service');
+            localStorage.removeItem('emailjs_template');
+            localStorage.removeItem('emailjs_smtp_token');
+            localStorage.removeItem('emailjs_smtp_from');
+            loadEmailJsInputs();
+            showNotification('Wyczyszczono konfigurację EmailJS');
+        }
+
+        // UI wiring
+        const emailConfigOpen = document.getElementById('emailjs-config-open');
+        const emailConfigPanel = document.getElementById('emailjs-config');
+        const emailSaveBtn = document.getElementById('emailjs-save');
+        const emailClearBtn = document.getElementById('emailjs-clear');
+        const emailTestBtn = document.getElementById('emailjs-send-test');
+
+        if (emailConfigOpen && emailConfigPanel) {
+            emailConfigOpen.addEventListener('click', () => {
+                emailConfigPanel.classList.toggle('hidden');
+                loadEmailJsInputs();
+            });
+        }
+        if (emailSaveBtn) emailSaveBtn.addEventListener('click', saveEmailJsConfig);
+        if (emailClearBtn) emailClearBtn.addEventListener('click', clearEmailJsConfig);
+        if (emailTestBtn) emailTestBtn.addEventListener('click', async () => {
+            // send a tiny test using current inputs
+            const cfg = getEmailJsConfig();
+            if (!cfg.user || !cfg.service || !cfg.template) {
+                showNotification('Uzupełnij wszystkie pola EmailJS przed testem.');
+                return;
+            }
+            // craft a quick test payload
+            const testPayload = { toEmail: (document.getElementById('recipient-email')||{}).value || cfg.user, name: 'Test', addressText: 'Testowa', trackingNumber: 'TEST123', pickupCode: 111111 };
+            try {
+                // initialize if needed
+                if (window.emailjs && !window.emailjs.__initialized) {
+                    try { window.emailjs.init(cfg.user); window.emailjs.__initialized = true; } catch (e) {}
+                }
+                await window.emailjs.send(cfg.service, cfg.template, { to_email: testPayload.toEmail, to_name: testPayload.name, tracking_number: testPayload.trackingNumber, pickup_code: testPayload.pickupCode, address: testPayload.addressText });
+                showNotification('EmailJS: test wysłany (sprawdź skrzynkę odbiorczą).');
+            } catch (e) {
+                console.warn('EmailJS test error', e && e.message);
+                showNotification('Błąd testu EmailJS — sprawdź konfigurację i połączenie.');
+            }
+        });
+
+        // mailto quick test (opens user's mail client)
+        const mailtoTestBtn = document.getElementById('emailjs-mailto-test');
+        if (mailtoTestBtn) mailtoTestBtn.addEventListener('click', () => {
+            const to = 'antoxfn401@gmail.com';
+            const subject = encodeURIComponent('Test powiadomienia o dostawie — VELOCITY');
+            const body = encodeURIComponent('Cześć,\n\nTo jest testowe powiadomienie o dostawie.\n\nDziękujemy.');
+            const mailto = `mailto:${to}?subject=${subject}&body=${body}`;
+            window.open(mailto, '_blank');
+            showNotification('Otwieram klienta pocztowego (mailto)');
+        });
+
+        // populate inputs on load
+        loadEmailJsInputs();
+
+        // Background worker: flush queued emails to backend periodically
+        async function flushEmailQueue() {
+            try {
+                const q = JSON.parse(localStorage.getItem('velocity_email_queue') || '[]');
+                if (!q || !q.length) return;
+                for (const item of q.slice()) {
+                    try {
+                        const resp = await fetch('/api/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(item) });
+                        if (resp.ok) {
+                            // remove this item from queue
+                            const current = JSON.parse(localStorage.getItem('velocity_email_queue') || '[]');
+                            const remaining = current.filter(it => !(it.time === item.time && it.toEmail === item.toEmail));
+                            localStorage.setItem('velocity_email_queue', JSON.stringify(remaining));
+                            // record successful send
+                            try {
+                                const records = JSON.parse(localStorage.getItem('velocity_emails') || '[]');
+                                records.push({ to: item.toEmail, name: item.name, addressText: item.addressText, tracking: item.trackingNumber, code: item.pickupCode, time: Date.now(), sentByServer: true });
+                                localStorage.setItem('velocity_emails', JSON.stringify(records));
+                            } catch (e) {}
+                        }
+                    } catch (e) {
+                        // leave item in queue
+                    }
+                }
+            } catch (e) { console.warn('flushEmailQueue error', e); }
+        }
+
+        // try flushing every 30s
+        setInterval(flushEmailQueue, 30000);
+        // and attempt once on load
+        flushEmailQueue();
+
+        // Compose and open mailto with pickup code when delivery completes
+        async function sendPickupEmailOnDelivery(addressText, trackingNumber) {
+            try {
+                const name = (document.getElementById('recipient-name') || {}).value || '';
+                const email = (document.getElementById('recipient-email') || {}).value || '';
+                if (!email) return; // no recipient email provided
+                const pickupCode = Math.floor(Math.random() * 900000) + 100000;
+
+                const payload = {
+                    toEmail: email,
+                    name,
+                    addressText,
+                    trackingNumber,
+                    pickupCode,
+                    time: Date.now()
+                };
+
+                // enqueue for guaranteed delivery attempt
+                try {
+                    const q = JSON.parse(localStorage.getItem('velocity_email_queue') || '[]');
+                    q.push(payload);
+                    localStorage.setItem('velocity_email_queue', JSON.stringify(q));
+                } catch (e) { console.warn('Queue save error', e); }
+
+                // Attempt immediate send to backend (no tokens required client-side)
+                let sentByServer = false;
+                try {
+                    const resp = await fetch('/api/notify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (resp.ok) {
+                        sentByServer = true;
+                        showNotification('Powiadomienie wysłane przez serwer.');
+                        // remove from queue
+                        try {
+                            const q2 = JSON.parse(localStorage.getItem('velocity_email_queue') || '[]');
+                            const remaining = q2.filter(item => !(item.time === payload.time && item.toEmail === payload.toEmail));
+                            localStorage.setItem('velocity_email_queue', JSON.stringify(remaining));
+                        } catch (e) {}
+                    }
+                } catch (e) {
+                    console.warn('Backend notify error', e && e.message);
+                }
+
+                // if server didn't send, try EmailJS / SMTPJS if configured (optional)
+                let sentByEmailJs = false;
+                let sentBySmtpJs = false;
+                if (!sentByServer) {
+                    try {
+                        const cfg = getEmailJsConfig();
+                        if (window.emailjs && cfg.user && cfg.service && cfg.template) {
+                            try {
+                                if (!window.emailjs.__initialized) { window.emailjs.init(cfg.user); window.emailjs.__initialized = true; }
+                                await window.emailjs.send(cfg.service, cfg.template, { to_email: email, to_name: name, tracking_number: trackingNumber, pickup_code: pickupCode, address: addressText });
+                                sentByEmailJs = true;
+                                showNotification('Powiadomienie wysłane przez EmailJS.');
+                            } catch (e) { console.warn('EmailJS send error', e && e.message); }
+                        }
+                    } catch (e) {}
+
+                    try {
+                        const cfg2 = getEmailJsConfig();
+                        if (!sentByEmailJs && window.Email && cfg2.smtpToken && cfg2.smtpFrom) {
+                            try {
+                                const subject = `Twoja przesyłka została dostarczona — kod odbioru`;
+                                const body = `Cześć ${name || ''},\n\nTwoja przesyłka (tracking: ${trackingNumber || '—'}) została dostarczona do paczkomatu.\nKod odbioru: ${pickupCode}\nAdres dostawy:\n${addressText || '—'}\n\nDziękujemy za zamówienie w VELOCITY.`;
+                                const smtpResp = await Email.send({ SecureToken: cfg2.smtpToken, To: email, From: cfg2.smtpFrom, Subject: subject, Body: body });
+                                if (smtpResp) { sentBySmtpJs = true; showNotification('Powiadomienie wysłane przez SMTPJS.'); }
+                            } catch (e) { console.warn('SMTPJS send error', e && e.message); }
+                        }
+                    } catch (e) {}
+                }
+
+                // record result locally
+                try {
+                    const records = JSON.parse(localStorage.getItem('velocity_emails') || '[]');
+                    records.push({ to: email, name, addressText, tracking: trackingNumber, code: pickupCode, time: Date.now(), sentByServer, sentByEmailJs, sentBySmtpJs });
+                    localStorage.setItem('velocity_emails', JSON.stringify(records));
+                } catch (e) {}
+
+                if (!sentByServer && !sentByEmailJs && !sentBySmtpJs) {
+                    showNotification('Wiadomość dodana do kolejki — zostanie wysłana automatycznie, gdy serwer będzie dostępny.');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    </script>
+</body>
+</html>
